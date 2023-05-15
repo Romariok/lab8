@@ -34,26 +34,13 @@ public class CollectionManager {
      */
     Comparator<HumanBeing> comparator = (o1, o2) -> o2.compareTo(o1);
 
-    /**
-     * Constructor of {@code Linkedlist} where we initialize date of creation of collection
-     * Also checking file and loading data from xml file
-     *
-     * @param path path to the file
-     * @see ParserfromBD
-     */
 
     private HumanbeingTableManager hbManager = new HumanbeingTableManager();
 
     public static String bdColumns = "(id, name, x, y, creationDate, realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, carCool, login)";
     public static String bdSetColumns = "(name, x, y, realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, carCool)";
 
-    public CollectionManager(String path) {
-        try {
-            if (path == null) throw new FileNotFoundException();
-        } catch (FileNotFoundException ex) {
-            System.err.println("Введите путь до файла в виде аргумента!");
-            System.exit(1);
-        }
+    public CollectionManager() {
         indate = ZonedDateTime.now();
         this.parserfromBD = new ParserfromBD(this);
         load();
@@ -67,18 +54,10 @@ public class CollectionManager {
         return comparator;
     }
 
-
-    public LinkedList<HumanBeing> getCollection() {
-        return humans;
-    }
-
     public CopyOnWriteArrayList<HumanBeing> getConcurrentCollection() {
         return concurrentHumans;
     }
 
-    public void setCollection(LinkedList<HumanBeing> linkedList) {
-        this.humans = linkedList;
-    }
 
     public void setConcurrentCollection(CopyOnWriteArrayList<HumanBeing> ls) {
         this.concurrentHumans = ls;

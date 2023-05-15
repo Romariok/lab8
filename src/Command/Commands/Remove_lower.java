@@ -7,10 +7,6 @@ import DataStructure.Response;
 import server.FileManagment.ParserfromBD;
 
 
-import java.util.LinkedList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static server.ServerMain.clientsDataPath;
 
 /**
  * Class for the remove_lower command. Removing elements in collection whose id is lower than specified

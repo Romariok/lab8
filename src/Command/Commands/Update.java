@@ -2,16 +2,8 @@ package Command.Commands;
 
 import Command.*;
 import Data.HumanBeing;
-import DataStructure.CollectionManager;
 import DataStructure.Response;
-import server.FileManagment.ParserfromBD;
-import server.FileManagment.ParserfromBD;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static server.ServerMain.clientsDataPath;
 
 /**
  * Class for the update command. Updating element by his index

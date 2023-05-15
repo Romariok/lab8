@@ -4,16 +4,12 @@ import Auth.AuthResponse;
 import Auth.Session;
 import Command.CommandResponse;
 import Command.CommandFactory;
-import Data.HumanBeing;
+import GUI.MainFrame;
 
-
+import java.awt.*;
 import java.net.InetAddress;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static client.ClientMain.arg;
 import static Command.Serializer.serialize;
@@ -30,13 +26,16 @@ public class ClientBase implements Runnable {
     }
 
     public void run() {
+        EventQueue.invokeLater(() -> {
+            MainFrame ex = new MainFrame();
+            ex.setVisible(true);
+        });
         String commandName;
         String[] commandArgs;
         Scanner scanner = new Scanner(System.in);
         CommandFactory commandFactory = new CommandFactory();
         if (arg.length >= 3){
             if (Objects.equals(arg[1], "-exec")){
-                CommandResponse execute_script = commandFactory.getCommand("execute_script", new String[]{arg[2]}, scanner, false);
                 try{
                     connection.send(serialize(new AuthResponse("execute_script",session.getUser(),session.isAuthoriazed(),arg[2],"")));
                     AuthResponse response = connection.recieve();

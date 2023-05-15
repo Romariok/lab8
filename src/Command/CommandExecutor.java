@@ -19,7 +19,7 @@ import java.util.logging.Level;
 
 import static Command.Serializer.deserialize;
 import static server.Connections.Connection.manager;
-import static server.ServerMain.clientsDataPath;
+
 
 public class CommandExecutor {
     private static DatagramChannel datagramChannel;

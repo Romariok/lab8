@@ -4,12 +4,7 @@ import Command.*;
 import Data.HumanBeing;
 import DataStructure.CollectionManager;
 import DataStructure.Response;
-import server.FileManagment.ParserfromBD;
 
-import java.util.LinkedList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static server.ServerMain.clientsDataPath;
 
 /**
  * Class for the remove_greater command. Removing elements in collection whose id is greater than specified
