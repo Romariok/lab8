@@ -18,10 +18,13 @@ public class MainFrame extends JFrame {
     private JMenuItem is_item;
     private JMenuItem pl_item;
     private JMenuItem es_cr_item;
+    private JButton add_button;
 //    private JDialog table_frame;
+    private JFrame list_of_commands_frame;
     private JButton table_button;
     private JButton visualization_button;
-    private JPanel panel;
+    private JPanel main_panel;
+    private JPanel list_panel;
     private JButton list_of_commands;
 
     public MainFrame() {
@@ -31,17 +34,19 @@ public class MainFrame extends JFrame {
     private void initUI() {
         initializePanel();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 800);
+
         initializeMenuBar();
-        updateLanguage(Locale.getDefault());
+
         statusbar = new JLabel("Ready to fight!");
         statusbar.setBorder(BorderFactory.createEtchedBorder(
                 EtchedBorder.RAISED));
-
+        initialize_list_of_commands_frame();
+        updateLanguage(Locale.getDefault());
         add(statusbar, BorderLayout.SOUTH);
         setJMenuBar(menuBar);
-        add(panel);
+        add(main_panel);
         pack();
+        setSize(500, 500);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -58,23 +63,51 @@ public class MainFrame extends JFrame {
         table_button.setText(resourceBundle.getString("table_button"));
         visualization_button.setText(resourceBundle.getString("graph_button"));
         list_of_commands.setText(resourceBundle.getString("list_of_commands_button"));
+        list_of_commands_frame.setTitle(resourceBundle.getString("list_of_commands_button"));
+        add_button.setText(resourceBundle.getString("add_button"));
 //        table_frame.setTitle(resourceBundle.getString("table_button"));
+    }
+
+    private void initialize_list_of_commands_frame(){
+        list_of_commands_frame = new JFrame();
+        add_button = new JButton("Add");
+        add_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add_button.addActionListener((ActionEvent e) -> {
+            JButton item = (JButton) e.getSource();
+            String label = item.getText();
+            statusbar.setText(" " + label + " button clicked");
+        });
+        list_panel = new JPanel();
+        list_panel.setLayout(new BoxLayout(list_panel, BoxLayout.Y_AXIS));
+        list_panel.setBorder(new EmptyBorder(new Insets(40, 60, 40, 60)));
+        list_panel.add(add_button);
+        list_of_commands_frame.add(list_panel);
+        list_of_commands_frame.add(statusbar, BorderLayout.SOUTH);
+        list_of_commands_frame.pack();
+        list_of_commands_frame.setSize(500, 600);
+        setLocationRelativeTo(null);
     }
     private void initializePanel(){
         list_of_commands = new JButton("List of commands");
+        list_of_commands.addActionListener((ActionEvent e) -> {
+            JButton item = (JButton) e.getSource();
+            String label = item.getText();
+            list_of_commands_frame.setVisible(true);
+            statusbar.setText(" " + label + " button clicked");
+        });
         list_of_commands.setAlignmentX(Component.CENTER_ALIGNMENT);
         table_button = new JButton("Table of Objects");
         table_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         visualization_button = new JButton("Visualization of Objects");
         visualization_button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(new EmptyBorder(new Insets(40, 60, 40, 60)));
-        panel.add(list_of_commands);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(table_button);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(visualization_button);
+        main_panel = new JPanel();
+        main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
+        main_panel.setBorder(new EmptyBorder(new Insets(40, 60, 40, 60)));
+        main_panel.add(list_of_commands);
+        main_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        main_panel.add(table_button);
+        main_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        main_panel.add(visualization_button);
 
     }
     private void initializeMenuBar() {
