@@ -8,6 +8,7 @@ import GUI.MainFrame;
 
 import java.awt.*;
 import java.net.InetAddress;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.List;
 
@@ -30,6 +31,21 @@ public class ClientBase implements Runnable {
             MainFrame ex = new MainFrame();
             ex.setVisible(true);
         });
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    if(session.isAuthoriazed()) {
+                        connection.send(serialize(new AuthResponse("show", session.getUser(), session.isAuthoriazed(), "", "")));
+                        System.out.println(connection.recieve().getCommand());
+                    }
+                }
+                catch (Exception e){
+                    System.err.println(e.getMessage());
+                }
+            }
+        },2*1000,5*1000);
         String commandName;
         String[] commandArgs;
         Scanner scanner = new Scanner(System.in);
