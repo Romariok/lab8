@@ -8,7 +8,6 @@ import GUI.MainFrame;
 
 import java.awt.*;
 import java.net.InetAddress;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ClientBase implements Runnable {
 
     public void run() {
         EventQueue.invokeLater(() -> {
-            MainFrame ex = new MainFrame();
+            MainFrame ex = new MainFrame(connection);
             ex.setVisible(true);
         });
         Timer timer = new Timer();
