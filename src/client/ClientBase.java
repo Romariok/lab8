@@ -4,6 +4,7 @@ import Auth.AuthResponse;
 import Auth.Session;
 import Command.CommandResponse;
 import Command.CommandFactory;
+import GUI.AuthFrame;
 import GUI.MainFrame;
 
 import java.awt.*;
@@ -27,7 +28,7 @@ public class ClientBase implements Runnable {
 
     public void run() {
         EventQueue.invokeLater(() -> {
-            MainFrame ex = new MainFrame(connection);
+            AuthFrame ex = new AuthFrame(connection);
             ex.setVisible(true);
         });
         Timer timer = new Timer();

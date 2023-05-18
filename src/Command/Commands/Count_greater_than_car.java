@@ -4,6 +4,7 @@ import Command.CommandResponse;
 import Command.Command_abstract;
 import Data.HumanBeing;
 import DataStructure.Response;
+import server.Log;
 
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,15 +21,21 @@ public class Count_greater_than_car extends Command_abstract implements CommandR
     public void execute(){
         CopyOnWriteArrayList<HumanBeing> humans = getCollectionManager().getConcurrentCollection();
         int counting = 0;
-        boolean cool=  Boolean.parseBoolean(getArgs()[0]);
-        if (!cool) {
-            for (int i = 0; i < humans.size(); i++) {
-                if (humans.get(i).getCar().getCool()) {
-                    counting++;
+        try {
+            boolean cool=  Boolean.parseBoolean(getArgs()[0]);
+            if (!cool) {
+                for (int i = 0; i < humans.size(); i++) {
+                    if (humans.get(i).getCar().getCool()) {
+                        counting++;
+                    }
                 }
             }
+            output = "Количество элементов, значение поля car которых больше " + cool + " : " + counting+"\n";
+        }catch (Exception ex){
+            output = "Неправильный аргумент!";
+            Log.getLogger().warning(ex.getMessage());
         }
-        output = "Количество элементов, значение поля car которых больше " + cool + " : " + counting+"\n";
+
     }
 
     @Override
