@@ -1,9 +1,7 @@
 package Command;
 
-import Auth.AuthResponse;
 import Auth.Session;
 import Command.Commands.*;
-import server.FileManagment.ParserfromBD;
 import server.Log;
 
 import java.io.File;
@@ -50,10 +48,10 @@ public class ScriptExecuter {
                         commandlist.add(command);
                         command.setCollectionManager(manager);
                         command.setUser(session.getUser());
-                        if (session.isAuthoriazed() || command instanceof Auth || command instanceof Register || command instanceof Info || command instanceof Show ||command instanceof Execute_script) {
+                        if (session.isAuthorized() || command instanceof Auth || command instanceof Register || command instanceof Info || command instanceof Show ||command instanceof Execute_script) {
                             command.execute();
                             if (command instanceof Auth) {
-                                session.setAuthoriazed(((Auth) command).getSession().isAuthoriazed());
+                                session.setAuthoriazed(((Auth) command).getSession().isAuthorized());
                                 session.setUser(((Auth) command).getSession().getUser());
                             }
                             output.append(command.getResponse().getOutput());

@@ -1,5 +1,8 @@
 package GUI;
 
+import Auth.AuthResponse;
+import Auth.Session;
+import Auth.User;
 import client.Connection;
 
 import javax.swing.*;
@@ -9,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import static Command.Serializer.serialize;
 
 public class AuthFrame extends ExtendableJFrame {
     private Connection connection;
@@ -21,8 +26,11 @@ public class AuthFrame extends ExtendableJFrame {
     private JPanel panel;
     private JDialog d = new JDialog();
 
-    public AuthFrame(Connection connection) {
+    private Session session;
+
+    public AuthFrame(Connection connection, Session session) {
         this.connection = connection;
+        this.session = session;
         initUI();
     }
 
@@ -41,16 +49,23 @@ public class AuthFrame extends ExtendableJFrame {
             loginPasWindow();
 //           Уже инцилизированы пароль и логин
 //            #TODO Инцилизировать Dialog с полями login и пароль. Будет относиться и к register
-
-
-//            connection.send(serialize(new AuthResponse("auth", session.getUser(), session.isAuthoriazed(), "", "")));
+            session.setUser(login);
+            User user = new User();
+            user.setPass(password);
+            user.setUser(login);
+            try {
+                connection.send(serialize(new AuthResponse("auth", session.getUser(), session.isAuthorized(), "", user.toString())));
+            }
+            catch (Exception e){
+                JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"),//                        "Error", JOptionPane.ERROR_MESSAGE);)
+            }
 //        Возможно с connection нужно рпокидывать session
 //         #TODO  Сделать проверку  успешного auth
 
 
 //            if (...){
 //                При успешной авторизации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("succes"),
+//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("success"),
 //                        "Information", JOptionPane.INFORMATION_MESSAGE);
 //                EventQueue.invokeLater(() -> {
 //                    MainFrame ex = new MainFrame(connection);
@@ -74,13 +89,13 @@ public class AuthFrame extends ExtendableJFrame {
 
             loginPasWindow();
 //           Уже инцилизированы пароль и логин
-//            connection.send(serialize(new AuthResponse("register", session.getUser(), session.isAuthoriazed(), "", "")));
+//            connection.send(serialize(new AuthResponse("register", session.getUser(), session.isAuthorized(), "", "")));
 //         #TODO  Сделать проверку  успешного register
 
 
 //            if (...){
 //                При успешной регистрации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("succes"),
+//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("success"),
 //                        "Information", JOptionPane.INFORMATION_MESSAGE);
 //
 //            } else{

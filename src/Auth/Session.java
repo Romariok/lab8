@@ -14,7 +14,7 @@ public class Session {
         this.user = user;
     }
 
-    public boolean isAuthoriazed() {
+    public boolean isAuthorized() {
         return authorized;
     }
 

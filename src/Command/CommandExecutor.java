@@ -58,7 +58,7 @@ public class CommandExecutor {
             String output = command.getResponse().getOutput();
             response = new AuthResponse(output, authResponse.getUser(), authResponse.isAutorized(),"","");
             if (command instanceof Auth) {
-                response = new AuthResponse(output, ((Auth) command).getSession().getUser(), ((Auth) command).getSession().isAuthoriazed(),"","");
+                response = new AuthResponse(output, ((Auth) command).getSession().getUser(), ((Auth) command).getSession().isAuthorized(),"","");
             }
 
             if (command.isSuccess() && command.isBd()) {

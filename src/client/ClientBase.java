@@ -5,7 +5,6 @@ import Auth.Session;
 import Command.CommandResponse;
 import Command.CommandFactory;
 import GUI.AuthFrame;
-import GUI.MainFrame;
 
 import java.awt.*;
 import java.net.InetAddress;
@@ -28,7 +27,7 @@ public class ClientBase implements Runnable {
 
     public void run() {
         EventQueue.invokeLater(() -> {
-            AuthFrame ex = new AuthFrame(connection);
+            AuthFrame ex = new AuthFrame(connection, session);
             ex.setVisible(true);
         });
         Timer timer = new Timer();
@@ -36,8 +35,8 @@ public class ClientBase implements Runnable {
             @Override
             public void run() {
                 try {
-                    if(session.isAuthoriazed()) {
-                        connection.send(serialize(new AuthResponse("show", session.getUser(), session.isAuthoriazed(), "", "")));
+                    if(session.isAuthorized()) {
+                        connection.send(serialize(new AuthResponse("show", session.getUser(), session.isAuthorized(), "", "")));
                         System.out.println(connection.recieve().getCommand());
                     }
                 }
@@ -53,7 +52,7 @@ public class ClientBase implements Runnable {
         if (arg.length >= 3){
             if (Objects.equals(arg[1], "-exec")){
                 try{
-                    connection.send(serialize(new AuthResponse("execute_script",session.getUser(),session.isAuthoriazed(),arg[2],"")));
+                    connection.send(serialize(new AuthResponse("execute_script",session.getUser(),session.isAuthorized(),arg[2],"")));
                     AuthResponse response = connection.recieve();
                     if (!response.getCommand().isEmpty()) System.out.println(response);
                     session.setUser(response.getUser());
@@ -80,14 +79,14 @@ public class ClientBase implements Runnable {
             if (command != null){
                 try{
                     if(command.getArgs() != null && command.getValue()!=null) {
-                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthoriazed(), command.getArgs()[0], command.getValue().toString());
+                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthorized(), command.getArgs()[0], command.getValue().toString());
                     } else if (command.getArgs() == null && command.getValue()!=null) {
-                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthoriazed(), "", command.getValue().toString());
+                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthorized(), "", command.getValue().toString());
                     } else if (command.getArgs() != null && command.getValue()==null) {
-                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthoriazed(), command.getArgs()[0], "");
+                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthorized(), command.getArgs()[0], "");
                     }
                     else {
-                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthoriazed(), "", "");
+                        sending = new AuthResponse(commandName, session.getUser(), session.isAuthorized(), "", "");
                     }
 
                     connection.send(serialize(sending));
