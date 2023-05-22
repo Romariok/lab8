@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class readHumanBeingFromConsole {
     public static void initializeHumanBeing(HumanBeing humanBeing, Scanner input, boolean bool){
         humanBeing.setCreationDate();
+        input.next();
         humanBeing.setName(SetName.initializeName(input, bool));
         Coordinates coordinates = new Coordinates();
         coordinates.setX(setCoordinates.setCoordinateX(input, bool));

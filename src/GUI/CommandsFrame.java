@@ -175,13 +175,13 @@ public class CommandsFrame extends ExtendableJFrame {
             statusbar.setText(" " + label + " button clicked");
             argumentWindow("filter_starts_with_soundtrack");
         });
-        //#TODO сделать окно и с аргументом, и с объектом
-//        insert_at_button.addActionListener((ActionEvent e) -> {
-//            JButton item = (JButton) e.getSource();
-//            String label = item.getText();
-//            statusbar.setText(" " + label + " button clicked");
-//            objectInputWindow("insert_at");
-//        });
+
+        insert_at_button.addActionListener((ActionEvent e) -> {
+            JButton item = (JButton) e.getSource();
+            String label = item.getText();
+            statusbar.setText(" " + label + " button clicked");
+            objectInputWindow("insert_at", true);
+        });
         remove_by_id_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
@@ -214,13 +214,13 @@ public class CommandsFrame extends ExtendableJFrame {
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        //#TODO сделать окно и с аргументом, и с объектом
-//        update_button.addActionListener((ActionEvent e) -> {
-//            JButton item = (JButton) e.getSource();
-//            String label = item.getText();
-//            statusbar.setText(" " + label + " button clicked");
-//            objectInputWindow("update");
-//        });
+
+        update_button.addActionListener((ActionEvent e) -> {
+            JButton item = (JButton) e.getSource();
+            String label = item.getText();
+            statusbar.setText(" " + label + " button clicked");
+            objectInputWindow("update", true);
+        });
 
         list_panel = new JPanel();
         list_panel.setLayout(new BoxLayout(list_panel, BoxLayout.Y_AXIS));
@@ -466,7 +466,11 @@ public class CommandsFrame extends ExtendableJFrame {
                 if (sb.toString().equals("")) {
                     HumanBeing h = new HumanBeing(name, new Coordinates(x, y), realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, new Car(car));
                     h.setLogin(session.getUser());
-                    connection.send(Serializer.serialize(new AuthResponse(command, session.getUser(), session.isAuthorized(), "", h.toString())));
+                    String args = "";
+                    if(arg_on){
+                        args = arg;
+                    }
+                    connection.send(Serializer.serialize(new AuthResponse(command, session.getUser(), session.isAuthorized(), args, h.toString())));
                     AuthResponse response = connection.recieve();
                     JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
                             "Information", JOptionPane.INFORMATION_MESSAGE);

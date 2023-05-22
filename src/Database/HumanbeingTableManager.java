@@ -4,6 +4,7 @@ import Data.HumanBeing;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class HumanbeingTableManager extends TableManager {
     private final String columns = "name, x, y, realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, carCool";
@@ -59,11 +60,20 @@ public class HumanbeingTableManager extends TableManager {
 
     }
 
-    public boolean insertCommand(HumanBeing hb) {
+    public boolean insertCommand(HumanBeing hb, boolean isIndex) {
         try {
-            PreparedStatement preparedStatement = ServerConnection.getINSTANCE().prepareStatement("INSERT INTO humanbeing (" + columns + ",login) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-            prepare(preparedStatement, hb);
-            preparedStatement.setString(11, hb.getLogin());
+            PreparedStatement preparedStatement;
+            if(isIndex) {
+                preparedStatement = ServerConnection.getINSTANCE().prepareStatement("INSERT INTO humanbeing (" + columns + ",login,id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                prepare(preparedStatement, hb);
+                preparedStatement.setString(11, hb.getLogin());
+                preparedStatement.setLong(12,hb.getId());
+            }
+            else{
+                preparedStatement = ServerConnection.getINSTANCE().prepareStatement("INSERT INTO humanbeing (" + columns + ",login) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                prepare(preparedStatement, hb);
+                preparedStatement.setString(11, hb.getLogin());
+            }
             int res = preparedStatement.executeUpdate();
             if(res!=0){
                 return true;

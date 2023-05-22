@@ -31,5 +31,6 @@ create table humanbeing(
                                and realHero is not null
                                and soundtrackName is not null
                                and weaponType is not null
+                               and login is not null
 )
     );

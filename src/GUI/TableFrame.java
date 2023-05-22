@@ -65,7 +65,7 @@ public class TableFrame extends ExtendableJFrame {
                     System.err.println(e.getMessage());
                 }
             }
-        }, 2 * 1000, 20*1000);
+        }, 2 * 1000, 120*1000);
 
         Box contents = new Box(BoxLayout.Y_AXIS);
         contents.add(new JScrollPane(table));

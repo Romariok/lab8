@@ -125,6 +125,7 @@ public class AuthFrame extends ExtendableJFrame {
         p1.add(b);
         d.setContentPane(p1);
         d.setSize(400, 130);
+        d.setLocation(400, 500);
         d.setVisible(true);
     }
     private void auth(){

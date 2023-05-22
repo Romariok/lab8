@@ -21,9 +21,10 @@ public class Insert_at extends Command_abstract implements CommandResponse {
     public void execute(){
         long index = Long.parseLong(getArgs()[0]);
         HumanBeing humanBeing = (HumanBeing) getValue();
+        humanBeing.setLogin(getUser());
         output = "Ваш элемент успешно добавлен в коллекцию на " + index + " позицию!\n";
         humanBeing.setId(index);
-        setSuccess(getCollectionManager().getDBManager().insertCommand(humanBeing));
+        setSuccess(getCollectionManager().getDBManager().insertCommand(humanBeing,true));
         setBd(true);
         if(!isSuccess()) {
             output = "Возникла ошибка при добавлении элемента на " + index + "-ю позицию!\n"+getCollectionManager().getDBManager().getLastE()+"\n";

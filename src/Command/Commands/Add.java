@@ -24,7 +24,7 @@ public class Add extends Command_abstract implements CommandResponse{
         setBd(true);
         HumanBeing h = (HumanBeing)getValue();
         h.setLogin(getUser());
-        setSuccess(getCollectionManager().getDBManager().insertCommand(h));
+        setSuccess(getCollectionManager().getDBManager().insertCommand(h,false));
         Comparator<HumanBeing> comparator = getCollectionManager().getComparator();
         humans.sort(comparator);
     }
