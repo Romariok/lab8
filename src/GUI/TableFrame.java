@@ -2,6 +2,8 @@ package GUI;
 
 import Auth.AuthResponse;
 import Auth.Session;
+import Data.HumanBeing;
+import Data.setVariables.readHumanBeingFromConsole;
 import client.Connection;
 
 import javax.swing.*;
@@ -11,6 +13,9 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import java.awt.*;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -50,9 +55,9 @@ public class TableFrame extends ExtendableJFrame {
 
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<>(table.getModel());
-        table.setRowSorter(sorter);
+        table.setAutoCreateRowSorter(true);
+//        table.setRowSorter(sorter);
 
-//     #TODO   обновлять данные таблицы с помощью метода setData
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -65,7 +70,7 @@ public class TableFrame extends ExtendableJFrame {
                     System.err.println(e.getMessage());
                 }
             }
-        }, 2 * 1000, 120*1000);
+        }, 2 * 1000, 10*1000);
 
         Box contents = new Box(BoxLayout.Y_AXIS);
         contents.add(new JScrollPane(table));
@@ -107,7 +112,7 @@ public class TableFrame extends ExtendableJFrame {
         setTitle(resourceBundle.getString("table_button"));
     }
 
-    public void setData(Object[][] data) {
+    public void setData(List<Object[]> data) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         tableModel.setRowCount(0);
         for (Object[] e : data) {
@@ -115,14 +120,35 @@ public class TableFrame extends ExtendableJFrame {
         }
         tableModel.fireTableDataChanged();
     }
-    private String[][] parseList(String output){
-        List<String[]> list = new ArrayList<>();
+    private List<Object[]> parseList(String output){
+        List<Object[]> list = new ArrayList<Object[]>();
         if(!output.equals("Collection is empty\n")) {
-            for (String args : output.split("\n\n")) {
-                list.add(args.split("\n"));
+            for (String arges : output.split("\n\n")) {
+                String[] args = arges.split("\n");
+                Object[] fields = new Object[13];
+                HumanBeing hb = new HumanBeing();
+                readHumanBeingFromConsole.initializeHumanBeing(hb,new Scanner(arges),true);
+                hb.setId(Long.parseLong(args[0]));
+                hb.setLogin(args[12]);
+                String time = args[4].substring(0, 19);
+                time = time.replace("T"," ");
+                hb.setCreationDate(ZonedDateTime.ofInstant(Timestamp.valueOf(time).toInstant(), ZoneId.systemDefault()));
+                fields[0] = hb.getId();
+                fields[1] = hb.getName();
+                fields[2] = hb.getCoordinates().getX();
+                fields[3] = hb.getCoordinates().getY();
+                fields[4] = hb.getCreationDate();
+                fields[5] = hb.isRealHero();
+                fields[6] = hb.getHasToothpick();
+                fields[7] = hb.getImpactSpeed();
+                fields[8] = hb.getSoundtrackName();
+                fields[9] = hb.getWeaponType();
+                fields[10] = hb.getMood();
+                fields[11] = hb.getCar().getCool();
+                fields[12] = hb.getLogin();
+                list.add(fields);
             }
-            return list.toArray(new String[0][]);
         }
-        return list.toArray(new String[0][]);
+        return list;
     }
 }
