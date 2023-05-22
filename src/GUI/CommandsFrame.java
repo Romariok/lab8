@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+
 public class CommandsFrame extends ExtendableJFrame {
     private JPanel list_panel;
     private JButton add_button = new JButton("Add");
@@ -33,17 +34,18 @@ public class CommandsFrame extends ExtendableJFrame {
     private JButton update_button = new JButton("Update");
     private LinkedList<JButton> list_of_button = new LinkedList<>();
 
-    private JTextField argument_text;
-    private JTextField name_text;
-    private JTextField coordinate_x_text;
-    private JTextField coordinate_y_text;
-    private JTextField realHero_text;
-    private JTextField hasToothpick_text;
-    private JTextField impactSpeed_text;
-    private JTextField soundtrackName_text;
-    private JTextField weaponType_text;
-    private JTextField mood_text;
-    private JTextField car_text;
+    private JTextField argument_text = new JTextField(10);
+    private JTextField name_text = new JTextField(10);
+    private JTextField coordinate_x_text = new JTextField(10);
+    private JTextField coordinate_y_text = new JTextField(10);
+    private JTextField realHero_text = new JTextField(10);
+    private JTextField hasToothpick_text = new JTextField(10);
+    private JTextField impactSpeed_text = new JTextField(10);
+    private JTextField soundtrackName_text = new JTextField(10);
+    private JTextField weaponType_text = new JTextField(10);
+    private JTextField mood_text = new JTextField(10);
+    private JTextField car_text = new JTextField(10);
+    private JTextField arg_text = new JTextField(10);
     private LinkedList<JPanel> panels = new LinkedList<>();
     private JDialog d = new JDialog();
     private JDialog d1 = new JDialog();
@@ -86,7 +88,7 @@ public class CommandsFrame extends ExtendableJFrame {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            objectInputWindow("add");
+            objectInputWindow("add", false);
         });
 
         clear_button.addActionListener((ActionEvent e) -> {
@@ -235,7 +237,6 @@ public class CommandsFrame extends ExtendableJFrame {
         add(statusbar, BorderLayout.SOUTH);
         initializeMenuBar();
         setJMenuBar(menuBar);
-        updateLanguage(Locale.getDefault());
         pack();
         setSize(500, 600);
         setLocationRelativeTo(null);
@@ -267,82 +268,96 @@ public class CommandsFrame extends ExtendableJFrame {
     }
 
 
-    private void objectInputWindow(String command) {
+    private void objectInputWindow(String command, boolean arg_on) {
         JLabel name_label = new JLabel("Name: ");
         JPanel name_panel = new JPanel();
-        name_text = new JTextField(20);
+        name_text.setToolTipText("Name of human being");
         name_panel.add(name_label);
+        name_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         name_panel.add(name_text);
         panels.add(name_panel);
 
 
         JLabel coordinate_x_label = new JLabel("Coordinate X: ");
         JPanel coordinate_x_panel = new JPanel();
-        coordinate_x_text = new JTextField(20);
+        coordinate_x_text.setToolTipText("Not null, must be a digit");
         coordinate_x_panel.add(coordinate_x_label);
+        coordinate_x_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         coordinate_x_panel.add(coordinate_x_text);
         panels.add(coordinate_x_panel);
-        coordinate_x_text.addActionListener((ActionEvent e) -> {
-
-        });
-
 
         JLabel coordinate_y_label = new JLabel("Coordinate Y: ");
         JPanel coordinate_y_panel = new JPanel();
-        coordinate_y_text = new JTextField(20);
+        coordinate_y_panel.setLayout(new BoxLayout(coordinate_y_panel, BoxLayout.X_AXIS));
+        coordinate_y_text.setToolTipText("Not null, must be a digit, must be lower 494");
         coordinate_y_panel.add(coordinate_y_label);
+        coordinate_y_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         coordinate_y_panel.add(coordinate_y_text);
         panels.add(coordinate_y_panel);
 
         JLabel realHero_label = new JLabel("Real Hero: ");
         JPanel real_hero_panel = new JPanel();
-        realHero_text = new JTextField(20);
+        realHero_text.setToolTipText("Да/Нет");
         real_hero_panel.add(realHero_label);
+        real_hero_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         real_hero_panel.add(realHero_text);
         panels.add(real_hero_panel);
 
         JLabel impact_speed_label = new JLabel("Impact speed: ");
         JPanel impact_speed_panel = new JPanel();
-        impactSpeed_text = new JTextField(20);
+        impactSpeed_text.setToolTipText("Impact speed must be positive number and lower 573!");
         impact_speed_panel.add(impact_speed_label);
+        impact_speed_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         impact_speed_panel.add(impactSpeed_text);
         panels.add(impact_speed_panel);
 
         JLabel hasToothpick_label = new JLabel("Existence of toothpick: ");
         JPanel hasToothpick_panel = new JPanel();
-        hasToothpick_text = new JTextField(20);
+        hasToothpick_text.setToolTipText("Да/Нет");
         hasToothpick_panel.add(hasToothpick_label);
+        hasToothpick_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         hasToothpick_panel.add(hasToothpick_text);
         panels.add(hasToothpick_panel);
 
         JLabel soundtrackName_label = new JLabel("Soundtrack name: ");
         JPanel soundtrackName_panel = new JPanel();
-        soundtrackName_text = new JTextField(20);
+        soundtrackName_text.setToolTipText("Not null");
         soundtrackName_panel.add(soundtrackName_label);
+        soundtrackName_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         soundtrackName_panel.add(soundtrackName_text);
         panels.add(soundtrackName_panel);
 
         JLabel weaponType_label = new JLabel("Weapon type: ");
         JPanel weaponType_panel = new JPanel();
-        weaponType_text = new JTextField(20);
+        weaponType_text.setToolTipText("Knife/Machine gun/Rifle/Shotgun");
         weaponType_panel.add(weaponType_label);
+        weaponType_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         weaponType_panel.add(weaponType_text);
         panels.add(weaponType_panel);
 
         JLabel mood_label = new JLabel("Mood: ");
         JPanel mood_panel = new JPanel();
-        mood_text = new JTextField(20);
+        mood_text.setToolTipText("Longing/Gloom/Frenzy");
         mood_panel.add(mood_label);
+        mood_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         mood_panel.add(mood_text);
         panels.add(mood_panel);
 
         JLabel car_label = new JLabel("Car: ");
         JPanel car_panel = new JPanel();
-        car_text = new JTextField(20);
+        car_text.setToolTipText("Да/Нет");
         car_panel.add(car_label);
+        car_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         car_panel.add(car_text);
         panels.add(car_panel);
 
+        if(arg_on){
+            JLabel arg_label = new JLabel("Argument: ");
+            JPanel arg_panel = new JPanel();
+            arg_panel.add(arg_label);
+            arg_panel.add(arg_text);
+            panels.add(arg_panel);
+        }
 
         JButton b = new JButton("OK");
         JPanel p2 = new JPanel();
@@ -359,7 +374,14 @@ public class CommandsFrame extends ExtendableJFrame {
             } else {
                 sb.append("Name is unacceptable!\n");
             }
-
+            if (arg_on){
+                line = arg_text.getText();
+                if (line != null && !line.equals("")) {
+                    arg = line;
+                } else {
+                    sb.append("Argument is unacceptable!\n");
+                }
+            }
 
             line = coordinate_x_text.getText();
             if (line != "\n" && line != null && !line.equals("")) {
@@ -461,8 +483,10 @@ public class CommandsFrame extends ExtendableJFrame {
         });
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
+        p1.setBorder(BorderFactory.createEmptyBorder(20,60,40,60));
 
         panels.forEach(e -> {
+            e.setLayout(new BoxLayout(e, BoxLayout.X_AXIS));
             p1.add(e);
             p1.add(Box.createRigidArea(new Dimension(0, 10)));
         });
@@ -480,7 +504,6 @@ public class CommandsFrame extends ExtendableJFrame {
     private void argumentWindow(String command) {
         JLabel label = new JLabel("Argument: ");
         JPanel panel = new JPanel();
-        argument_text = new JTextField(10);
         panel.add(label);
         panel.add(argument_text);
 
@@ -531,4 +554,5 @@ public class CommandsFrame extends ExtendableJFrame {
         d1.setSize(200, 200);
         d1.setVisible(true);
     }
+
 }

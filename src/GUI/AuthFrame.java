@@ -10,7 +10,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -26,7 +25,7 @@ public class AuthFrame extends ExtendableJFrame {
     private JButton register_button = new JButton("Registration");
     private JPanel panel;
     private JDialog d = new JDialog();
-
+    private MainFrame ex;
     private Session session;
 
     public AuthFrame(Connection connection, Session session) {
@@ -143,7 +142,8 @@ public class AuthFrame extends ExtendableJFrame {
                 JOptionPane.showMessageDialog(panel, resourceBundle.getString("succes"),
                         "Information", JOptionPane.INFORMATION_MESSAGE);
                 EventQueue.invokeLater(() -> {
-                    MainFrame ex = new MainFrame(connection, session);
+                    ex = new MainFrame(connection, session);
+                    ex.updateLanguage(resourceBundle.getLocale());
                     ex.setVisible(true);
                     setVisible(false);
                 });

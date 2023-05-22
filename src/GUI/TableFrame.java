@@ -6,8 +6,6 @@ import client.Connection;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -50,6 +48,9 @@ public class TableFrame extends ExtendableJFrame {
                 .getModel();
         contactTableModel.setColumnIdentifiers(columnsHeader);
 
+        TableRowSorter<TableModel> sorter
+                = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(sorter);
 
 //     #TODO   обновлять данные таблицы с помощью метода setData
         Timer timer = new Timer();
@@ -73,23 +74,20 @@ public class TableFrame extends ExtendableJFrame {
                 event -> {
                     int viewRow = table.getSelectedRow();
                     if (viewRow < 0) {
-                        //Selection got filtered away.
                         statusbar.setText("");
                     } else {
                         int modelRow =
                                 table.convertRowIndexToModel(viewRow);
-                        statusbar.setText(
+                        statusbar.setText(""+
                                 String.format("Selected Row in view: %d. " +
                                                 "Selected Row in model: %d.",
                                         viewRow, modelRow));
                     }
                 }
         );
-        TableRowSorter<TableModel> sorter
-                = new TableRowSorter<TableModel>(table.getModel());
-        table.setRowSorter(sorter);
 
-        updateLanguage(Locale.getDefault());
+
+
         pack();
         setLocationRelativeTo(null);
         setSize(1200, 800);

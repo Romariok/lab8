@@ -11,21 +11,24 @@ import java.awt.event.ActionEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
+
 public class MainFrame extends ExtendableJFrame {
     private JButton table_button;
     private JButton visualization_button;
+    private JPanel button_panel;
+    private JLabel login_label;
     private JPanel main_panel;
-    private CommandsFrame ex;
+    private CommandsFrame cf;
     private TableFrame tf;
 
     private JButton list_of_commands;
 
     public MainFrame(Connection connection, Session session) {
         this.connection = connection;
-        //#TODO вывести session.getUser как имя пользователя
         this.session = session;
+        cf = new CommandsFrame(connection,session);
         tf = new TableFrame(connection,session);
-        ex = new CommandsFrame(connection,session);
         initUI();
     }
 
@@ -36,9 +39,11 @@ public class MainFrame extends ExtendableJFrame {
         initializeMenuBar();
         statusbar.setBorder(BorderFactory.createEtchedBorder(
                 EtchedBorder.RAISED));
-        updateLanguage(Locale.getDefault());
         add(statusbar, BorderLayout.SOUTH);
         setJMenuBar(menuBar);
+        main_panel.add(login_label);
+        main_panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        main_panel.add(button_panel);
         add(main_panel);
         pack();
         setSize(500, 500);
@@ -49,6 +54,8 @@ public class MainFrame extends ExtendableJFrame {
     @Override
     void updateLanguage(Locale locale) {
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
+        tf.updateLanguage(locale);
+        cf.updateLanguage(locale);
         setTitle(resourceBundle.getString("title_name"));
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
         is_item.setText(resourceBundle.getString("is_lang_name"));
@@ -68,8 +75,9 @@ public class MainFrame extends ExtendableJFrame {
         list_of_commands.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
+            cf.updateLanguage(resourceBundle.getLocale());
             EventQueue.invokeLater(() -> {
-                ex.setVisible(true);
+                cf.setVisible(true);
             });
             statusbar.setText(" " + label + " button clicked");
         });
@@ -78,6 +86,7 @@ public class MainFrame extends ExtendableJFrame {
         table_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
+            tf.updateLanguage(resourceBundle.getLocale());
             EventQueue.invokeLater(() -> {
                 tf.setVisible(true);
             });
@@ -86,15 +95,18 @@ public class MainFrame extends ExtendableJFrame {
         table_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         visualization_button = new JButton("Visualization of Objects");
         visualization_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button_panel = new JPanel();
+        button_panel.setLayout(new BoxLayout(button_panel, BoxLayout.Y_AXIS));
+        button_panel.add(list_of_commands);
+        button_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        button_panel.add(table_button);
+        button_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        button_panel.add(visualization_button);
         main_panel = new JPanel();
         main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
-        main_panel.setBorder(new EmptyBorder(new Insets(40, 60, 40, 60)));
-        main_panel.add(list_of_commands);
-        main_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        main_panel.add(table_button);
-        main_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        main_panel.add(visualization_button);
-
+        main_panel.setBorder(BorderFactory.createEmptyBorder(40,60,40,60));
+        login_label = new JLabel("Login: "+session.getUser(), SwingConstants.CENTER);
+        login_label.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
 }
