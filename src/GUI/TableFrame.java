@@ -19,10 +19,12 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static Command.Serializer.serialize;
 
 public class TableFrame extends ExtendableJFrame {
+    public static CopyOnWriteArrayList<HumanBeing> currentUserList = new CopyOnWriteArrayList<>();
     DefaultTableModel tableModel;
     private Object[] columnsHeader = new String[]{"id", "name", "x", "y", "creationDate", "realHero", "hasToothpick",
             "ImpactSpeed", "SoundtrackName", "WeaponType", "Mood", "Car", "user"};
@@ -122,6 +124,7 @@ public class TableFrame extends ExtendableJFrame {
     }
     private List<Object[]> parseList(String output){
         List<Object[]> list = new ArrayList<Object[]>();
+        currentUserList.clear();
         if(!output.equals("Collection is empty\n")) {
             for (String arges : output.split("\n\n")) {
                 String[] args = arges.split("\n");
@@ -147,6 +150,9 @@ public class TableFrame extends ExtendableJFrame {
                 fields[11] = hb.getCar().getCool();
                 fields[12] = hb.getLogin();
                 list.add(fields);
+                if(hb.getLogin().equals(session.getUser())){
+                    currentUserList.add(hb);
+                }
             }
         }
         return list;
