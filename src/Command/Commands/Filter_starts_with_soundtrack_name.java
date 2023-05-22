@@ -18,6 +18,7 @@ public class Filter_starts_with_soundtrack_name extends Command_abstract impleme
     }
     @Override
     public void execute() {
+        output = "";
         CopyOnWriteArrayList<HumanBeing> humans = getCollectionManager().getConcurrentCollection();
         String soundtrackName = getArgs()[0];
         humans.forEach((humanBeing -> {

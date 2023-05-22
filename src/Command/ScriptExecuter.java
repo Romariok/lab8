@@ -21,6 +21,7 @@ public class ScriptExecuter {
     public ScriptExecuter(File script, String user) {
         this.script = script;
         session.setUser(user);
+        session.setAuthoriazed(user!=null);
     }
 
     public ArrayList<CommandResponse> getCommandlist() {

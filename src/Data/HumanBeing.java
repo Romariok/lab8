@@ -311,13 +311,16 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
      */
     @Override
     public String toString() {
-        return this.name + "\n"  + this.coordinates.getX()+"\n"+this.coordinates.getY()+"\n" +
+        return this.getId() + "\n" + this.name + "\n"  + this.coordinates.getX()+"\n"+this.coordinates.getY()+"\n" + getCreationDate()+ "\n" +
                 getRus(this.realHero) + "\n"  + getRus(this.hasToothpick) + "\n"  + this.impactSpeed + "\n"  + this.soundtrackName + "\n" +
-                this.weaponType + "\n"  + this.mood + "\n" + getRus(this.car.getCool()) + "\n";
+                this.weaponType + "\n"  + this.mood + "\n" + getRus(this.car.getCool()) + "\n" + this.getLogin()+"\n";
     }
 
     private String getRus(boolean b){
-        return !b ?"Нет":"Да";
+        if(b){
+            return "Да";
+        }
+        return "Нет";
     }
 
     @Override

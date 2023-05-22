@@ -4,13 +4,17 @@ import Auth.AuthResponse;
 import Auth.Session;
 import Command.CommandResponse;
 import Command.CommandFactory;
+import Data.HumanBeing;
 import GUI.AuthFrame;
+import server.FileManagment.ParserfromBD;
 
 import java.awt.*;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import static Data.setVariables.readHumanBeingFromConsole.initializeHumanBeing;
 import static client.ClientMain.arg;
 import static Command.Serializer.serialize;
 public class ClientBase implements Runnable {
@@ -24,27 +28,11 @@ public class ClientBase implements Runnable {
             throw new RuntimeException();
         }
     }
-
     public void run() {
         EventQueue.invokeLater(() -> {
             AuthFrame ex = new AuthFrame(connection, session);
             ex.setVisible(true);
         });
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    if(session.isAuthorized()) {
-                        connection.send(serialize(new AuthResponse("show", session.getUser(), session.isAuthorized(), "", "")));
-                        System.out.println(connection.recieve().getCommand());
-                    }
-                }
-                catch (Exception e){
-                    System.err.println(e.getMessage());
-                }
-            }
-        },2*1000,5*1000);
         String commandName;
         String[] commandArgs;
         Scanner scanner = new Scanner(System.in);
@@ -63,8 +51,6 @@ public class ClientBase implements Runnable {
                 }
             }
         }
-
-
         while (true) {
             List<String> input = Arrays.stream(scanner.nextLine().split(" ")).toList();
             commandName = input.get(0);

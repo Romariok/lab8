@@ -1,5 +1,6 @@
 package GUI;
 
+import Auth.Session;
 import client.Connection;
 
 import javax.swing.*;
@@ -14,13 +15,17 @@ public class MainFrame extends ExtendableJFrame {
     private JButton table_button;
     private JButton visualization_button;
     private JPanel main_panel;
-    private CommandsFrame ex = new CommandsFrame(connection);
-    private TableFrame tf = new TableFrame();
+    private CommandsFrame ex;
+    private TableFrame tf;
 
     private JButton list_of_commands;
 
-    public MainFrame(Connection connection) {
+    public MainFrame(Connection connection, Session session) {
         this.connection = connection;
+        //#TODO вывести session.getUser как имя пользователя
+        this.session = session;
+        tf = new TableFrame(connection,session);
+        ex = new CommandsFrame(connection,session);
         initUI();
     }
 
@@ -28,9 +33,7 @@ public class MainFrame extends ExtendableJFrame {
     void initUI() {
         initializePanelOfMainFrame();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         initializeMenuBar();
-
         statusbar.setBorder(BorderFactory.createEtchedBorder(
                 EtchedBorder.RAISED));
         updateLanguage(Locale.getDefault());

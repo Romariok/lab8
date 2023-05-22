@@ -24,8 +24,8 @@ public class Count_greater_than_car extends Command_abstract implements CommandR
         try {
             boolean cool=  Boolean.parseBoolean(getArgs()[0]);
             if (!cool) {
-                for (int i = 0; i < humans.size(); i++) {
-                    if (humans.get(i).getCar().getCool()) {
+                for (HumanBeing human : humans) {
+                    if (human.getCar().getCool()) {
                         counting++;
                     }
                 }

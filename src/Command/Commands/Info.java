@@ -21,9 +21,9 @@ public class Info extends Command_abstract implements CommandResponse {
     @Override
     public void execute(){
         CopyOnWriteArrayList<HumanBeing> humans = getCollectionManager().getConcurrentCollection();
-        output = "Тип коллекции: " + humans.getClass() + "\n"
-                + "Дата инициализации: " + getCollectionManager().getIndate() + "\n"
-                + "Размер коллекции: " + humans.size() + "\n";
+        output = humans.getClass() + "\n"
+                + getCollectionManager().getIndate() + "\n"
+               + humans.size() + "\n";
     }
 
     @Override

@@ -1,5 +1,8 @@
 package GUI;
 
+import Auth.AuthResponse;
+import Auth.Session;
+import Command.Serializer;
 import Data.*;
 import client.Connection;
 
@@ -57,9 +60,8 @@ public class CommandsFrame extends ExtendableJFrame {
     private boolean car;
     private String arg;
 
-//    #TODO Когда объект или аргумент записывается, то при норм добавлении значения записываются в переменные выше. Их и используй
-
-    public CommandsFrame(Connection connection) {
+    public CommandsFrame(Connection connection, Session session) {
+        this.session = session;
         this.connection = connection;
         initUI();
     }
@@ -80,237 +82,143 @@ public class CommandsFrame extends ExtendableJFrame {
         list_of_button.add(remove_lower_button);
         list_of_button.add(sum_of_impact_speed_button);
         list_of_button.add(update_button);
-
-//#TODO    Где надо output вывести, то меняй         resourceBundle.getString("succes")
         add_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            objectInputWindow();
-
-//            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            objectInputWindow("add");
         });
 
         clear_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            try {
+                connection.send(Serializer.serialize(new AuthResponse("clear", session.getUser(), session.isAuthorized(), "", "")));
+                AuthResponse response = connection.recieve();
+                JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
         help_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            try {
+                connection.send(Serializer.serialize(new AuthResponse("help", session.getUser(), session.isAuthorized(), "", "")));
+                AuthResponse response = connection.recieve();
+                JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
         info_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            //            #TODO ТУТА ПИШИ          Перепиши сервер, чтобы в output были данные через пробел  (ТИП ДАТА РАЗМЕР)
-
-            String test = "type date size";
-
-
-
-
-
-
-            //            if (...){
-//            JWindow w = new JWindow();
-//            JLabel l1 = new JLabel("Type of collection: "+test.split(" ")[0]);
-//            JLabel l2 = new JLabel("Date of initializations: "+test.split(" ")[1]);
-//            JLabel l3 = new JLabel("Size of collection: "+test.split(" ")[2]);
-//            l1.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            l2.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            l3.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            JButton b = new JButton("OK");
-//            b.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            b.addActionListener((ActionEvent evt) -> {
-//                w.setVisible(false);
-//            });
-//            JPanel p = new JPanel();
-//            p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-//            p.add(Box.createRigidArea(new Dimension(0, 20)));
-//            p.add(l1);
-//            p.add(Box.createRigidArea(new Dimension(0, 20)));
-//            p.add(l2);
-//            p.add(Box.createRigidArea(new Dimension(0, 20)));
-//            p.add(l3);
-//            p.add(Box.createRigidArea(new Dimension(0, 10)));
-//            p.add(b);
-//            w.add(p);
-//
-//            w.setSize(200, 150);
-//            w.setLocation(300, 300);
-//
-//            w.setVisible(true);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            try {
+                connection.send(Serializer.serialize(new AuthResponse("info", session.getUser(), session.isAuthorized(), "", "")));
+                String[] test = connection.recieve().getCommand().split("\n");
+                JWindow w = new JWindow();
+                JLabel l1 = new JLabel("Type of collection: " + test[0]);
+                JLabel l2 = new JLabel("Date of initializations: " + test[1]);
+                JLabel l3 = new JLabel("Size of collection: " + test[2]);
+                l1.setAlignmentX(Component.CENTER_ALIGNMENT);
+                l2.setAlignmentX(Component.CENTER_ALIGNMENT);
+                l3.setAlignmentX(Component.CENTER_ALIGNMENT);
+                JButton b = new JButton("OK");
+                b.setAlignmentX(Component.CENTER_ALIGNMENT);
+                b.addActionListener((ActionEvent evt) -> {
+                    w.setVisible(false);
+                });
+                JPanel p = new JPanel();
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(Box.createRigidArea(new Dimension(0, 20)));
+                p.add(l1);
+                p.add(Box.createRigidArea(new Dimension(0, 20)));
+                p.add(l2);
+                p.add(Box.createRigidArea(new Dimension(0, 20)));
+                p.add(l3);
+                p.add(Box.createRigidArea(new Dimension(0, 10)));
+                p.add(b);
+                w.add(p);
+                w.setSize(200, 150);
+                w.setLocation(300, 300);
+                w.setVisible(true);
+            } catch (Exception exc) {
+                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
         count_greater_than_car_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("count_greater_than_car");
         });
         execute_script_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("execute_script");
         });
         filter_starts_with_soundtrack_name_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("filter_starts_with_soundtrack");
         });
-        insert_at_button.addActionListener((ActionEvent e) -> {
-            JButton item = (JButton) e.getSource();
-            String label = item.getText();
-            statusbar.setText(" " + label + " button clicked");
-            objectInputWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-        });
+        //#TODO сделать окно и с аргументом, и с объектом
+//        insert_at_button.addActionListener((ActionEvent e) -> {
+//            JButton item = (JButton) e.getSource();
+//            String label = item.getText();
+//            statusbar.setText(" " + label + " button clicked");
+//            objectInputWindow("insert_at");
+//        });
         remove_by_id_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("remove_by_id");
         });
         remove_greater_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("remove_greater");
         });
         remove_lower_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            argumentWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            argumentWindow("remove_lower");
         });
         sum_of_impact_speed_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
+            try {
+                connection.send(Serializer.serialize(new AuthResponse("sum_of_impact_speed",session.getUser(),session.isAuthorized(),"","")));
+                AuthResponse response = connection.recieve();
+                JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
-        update_button.addActionListener((ActionEvent e) -> {
-            JButton item = (JButton) e.getSource();
-            String label = item.getText();
-            statusbar.setText(" " + label + " button clicked");
-            objectInputWindow();
-            //            #TODO ТУТА ПИШИ
-            //            if (...){
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("succes"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                JOptionPane.showMessageDialog(CommandsFrame.this, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-        });
+        //#TODO сделать окно и с аргументом, и с объектом
+//        update_button.addActionListener((ActionEvent e) -> {
+//            JButton item = (JButton) e.getSource();
+//            String label = item.getText();
+//            statusbar.setText(" " + label + " button clicked");
+//            objectInputWindow("update");
+//        });
 
         list_panel = new JPanel();
         list_panel.setLayout(new BoxLayout(list_panel, BoxLayout.Y_AXIS));
@@ -359,7 +267,7 @@ public class CommandsFrame extends ExtendableJFrame {
     }
 
 
-    private void objectInputWindow() {
+    private void objectInputWindow(String command) {
         JLabel name_label = new JLabel("Name: ");
         JPanel name_panel = new JPanel();
         name_text = new JTextField(20);
@@ -532,12 +440,24 @@ public class CommandsFrame extends ExtendableJFrame {
                 case "Нет" -> car = false;
                 default -> sb.append("Car value is unacceptable!\n");
             }
-
-            if (sb.toString().equals("")) d.setVisible(false);
-            else {
+            try {
+                if (sb.toString().equals("")) {
+                    HumanBeing h = new HumanBeing(name, new Coordinates(x, y), realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, new Car(car));
+                    h.setLogin(session.getUser());
+                    connection.send(Serializer.serialize(new AuthResponse(command, session.getUser(), session.isAuthorized(), "", h.toString())));
+                    AuthResponse response = connection.recieve();
+                    JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
+                            "Information", JOptionPane.INFORMATION_MESSAGE);
+                    d.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(CommandsFrame.this, sb.toString(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception exception) {
                 JOptionPane.showMessageDialog(CommandsFrame.this, sb.toString(),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
+
         });
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
@@ -557,7 +477,7 @@ public class CommandsFrame extends ExtendableJFrame {
         d.setVisible(true);
     }
 
-    private void argumentWindow() {
+    private void argumentWindow(String command) {
         JLabel label = new JLabel("Argument: ");
         JPanel panel = new JPanel();
         argument_text = new JTextField(10);
@@ -573,27 +493,37 @@ public class CommandsFrame extends ExtendableJFrame {
         b.addActionListener((ActionEvent e) -> {
             String line;
             StringBuilder sb = new StringBuilder();
-
-
             line = argument_text.getText();
             if (line != null && !line.equals("") && line != "\n") {
                 arg = line;
             } else {
                 sb.append("Argument is unacceptable!\n");
             }
-            if (sb.toString().equals("")) d1.setVisible(false);
+            if (sb.toString().equals(""))
+            {
+                try {
+                    connection.send(Serializer.serialize(new AuthResponse(command, session.getUser(),session.isAuthorized(),arg,"")));
+                    AuthResponse response = connection.recieve();
+                    JOptionPane.showMessageDialog(CommandsFrame.this, response.getCommand(),
+                            "Information", JOptionPane.INFORMATION_MESSAGE);
+                    d1.setVisible(false);
+                }
+                catch (Exception exception){
+                    JOptionPane.showMessageDialog(CommandsFrame.this, sb.toString(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    d1.setVisible(false);
+                }
+            }
             else {
                 JOptionPane.showMessageDialog(CommandsFrame.this, sb.toString(),
                         "Error", JOptionPane.ERROR_MESSAGE);
+                d1.setVisible(false);
             }
         });
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
-
         p1.add(panel);
         p1.add(Box.createRigidArea(new Dimension(0, 10)));
-
-
         p2.add(b);
         p1.add(p2);
         p1.add(Box.createRigidArea(new Dimension(0, 15)));

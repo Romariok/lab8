@@ -35,9 +35,9 @@ public class ParserfromBD {
                     String time = params[4].substring(1, 20);
                     ZonedDateTime date = ZonedDateTime.ofInstant(Timestamp.valueOf(time).toInstant(), ZoneId.systemDefault());
                     hb.setCreationDate(date);
-                    boolean realHero = Boolean.parseBoolean(params[5]);
+                    boolean realHero = params[5].equals("t");
                     hb.setRealHero(realHero);
-                    boolean hasToothpick = Boolean.parseBoolean(params[6]);
+                    boolean hasToothpick = params[6].equals("t");
                     hb.setHasToothpick(hasToothpick);
                     long impactspeed = Long.parseLong(params[7]);
                     hb.setImpactSpeed(impactspeed);
@@ -56,7 +56,7 @@ public class ParserfromBD {
                         case "Gloom" -> hb.setMood(Mood.GLOOM);
                         case "Frenzy" -> hb.setMood(Mood.FRENZY);
                     }
-                    boolean cool = Boolean.parseBoolean(params[11]);
+                    boolean cool = params[11].equals("t");
                     Car car = new Car(cool);
                     hb.setCar(car);
                     hb.setLogin(params[12]);

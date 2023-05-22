@@ -1,5 +1,6 @@
 package GUI;
 
+import Auth.Session;
 import client.Connection;
 
 import javax.swing.*;
@@ -20,6 +21,7 @@ public abstract class ExtendableJFrame extends JFrame{
     protected JMenuItem is_item;
     protected JMenuItem pl_item;
     protected JMenuItem es_cr_item;
+    protected Session session;
 
 
     abstract void initUI();

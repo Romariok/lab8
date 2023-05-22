@@ -1,5 +1,9 @@
 package GUI;
 
+import Auth.AuthResponse;
+import Auth.Session;
+import client.Connection;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -9,22 +13,26 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import java.awt.*;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
+import java.util.Timer;
 
-public class TableFrame extends ExtendableJFrame{
+import static Command.Serializer.serialize;
+
+public class TableFrame extends ExtendableJFrame {
     DefaultTableModel tableModel;
-
-    private Object[][] data = new String[][]{{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "bbbb"},
-            {"6", "22", "5152", "783", "30", "13", "131", "16", "153", "1", "13", "15" , "aaa"}};
-    private Object[] columnsHeader = new String[] {"id", "name", "x", "y", "creationDate", "realHero", "hasToothpick",
-    "ImpactSpeed", "SoundtrackName", "WeaponType", "Mood", "Car", "user"};
+    private Object[] columnsHeader = new String[]{"id", "name", "x", "y", "creationDate", "realHero", "hasToothpick",
+            "ImpactSpeed", "SoundtrackName", "WeaponType", "Mood", "Car", "user"};
     private JTable table;
-    public TableFrame(){
+
+    public TableFrame(Connection connection, Session session) {
+        this.connection = connection;
+        this.session = session;
         initUI();
     }
+
     @Override
-    void initUI(){
+    void initUI() {
         statusbar.setBorder(BorderFactory.createEtchedBorder(
                 EtchedBorder.RAISED));
 
@@ -43,13 +51,21 @@ public class TableFrame extends ExtendableJFrame{
         contactTableModel.setColumnIdentifiers(columnsHeader);
 
 
-
-
 //     #TODO   обновлять данные таблицы с помощью метода setData
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    connection.send(serialize(new AuthResponse("show", session.getUser(), session.isAuthorized(), "", "")));
+                    String output = connection.recieve().getCommand();
+                    setData(parseList(output));
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }, 2 * 1000, 20*1000);
 
-
-
-        setData(data);
         Box contents = new Box(BoxLayout.Y_AXIS);
         contents.add(new JScrollPane(table));
         getContentPane().add(contents);
@@ -82,7 +98,7 @@ public class TableFrame extends ExtendableJFrame{
 
 
     @Override
-    void updateLanguage(Locale locale){
+    void updateLanguage(Locale locale) {
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
         is_item.setText(resourceBundle.getString("is_lang_name"));
@@ -96,10 +112,19 @@ public class TableFrame extends ExtendableJFrame{
     public void setData(Object[][] data) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         tableModel.setRowCount(0);
-        this.data = data;
-        for (Object[] e: this.data){
+        for (Object[] e : data) {
             tableModel.addRow(e);
         }
         tableModel.fireTableDataChanged();
+    }
+    private String[][] parseList(String output){
+        List<String[]> list = new ArrayList<>();
+        if(!output.equals("Collection is empty\n")) {
+            for (String args : output.split("\n\n")) {
+                list.add(args.split("\n"));
+            }
+            return list.toArray(new String[0][]);
+        }
+        return list.toArray(new String[0][]);
     }
 }

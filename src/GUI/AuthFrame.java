@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -45,80 +46,41 @@ public class AuthFrame extends ExtendableJFrame {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-
-            loginPasWindow();
-//           Уже инцилизированы пароль и логин
-//            #TODO Инцилизировать Dialog с полями login и пароль. Будет относиться и к register
-            session.setUser(login);
-            User user = new User();
-            user.setPass(password);
-            user.setUser(login);
-            try {
-                connection.send(serialize(new AuthResponse("auth", session.getUser(), session.isAuthorized(), "", user.toString())));
-            }
-            catch (Exception e){
-                JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"),//                        "Error", JOptionPane.ERROR_MESSAGE);)
-            }
-//        Возможно с connection нужно рпокидывать session
-//         #TODO  Сделать проверку  успешного auth
-
-
-//            if (...){
-//                При успешной авторизации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("success"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//                EventQueue.invokeLater(() -> {
-//                    MainFrame ex = new MainFrame(connection);
-//                    ex.setVisible(true);
-//                    setVisible(false);
-//                });
-//
-//            } else{
-//                При неуспешной авторизации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-
+            loginPasWindow(true);
         });
         register_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         register_button.addActionListener((ActionEvent e) -> {
             JButton item = (JButton) e.getSource();
             String label = item.getText();
             statusbar.setText(" " + label + " button clicked");
-
-
-            loginPasWindow();
-//           Уже инцилизированы пароль и логин
-//            connection.send(serialize(new AuthResponse("register", session.getUser(), session.isAuthorized(), "", "")));
-//         #TODO  Сделать проверку  успешного register
-
-
-//            if (...){
-//                При успешной регистрации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("success"),
-//                        "Information", JOptionPane.INFORMATION_MESSAGE);
-//
-//            } else{
-//                При неуспешной регистрации
-//                JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"),
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-
+            loginPasWindow(false);
         });
         panel.add(auth_button);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(Box.createRigidArea(new
+
+                Dimension(0, 10)));
         panel.add(register_button);
+
         add(panel);
         statusbar.setBorder(BorderFactory.createEtchedBorder(
                 EtchedBorder.RAISED));
+
         add(statusbar, BorderLayout.SOUTH);
+
         initializeMenuBar();
+
         setJMenuBar(menuBar);
+
         updateLanguage(Locale.getDefault());
+
         pack();
+
         setSize(400, 400);
+
         setLocationRelativeTo(null);
+
         setVisible(true);
+
     }
 
     @Override
@@ -135,12 +97,10 @@ public class AuthFrame extends ExtendableJFrame {
         setTitle(resourceBundle.getString("auth_frame"));
     }
 
-    private void loginPasWindow() {
+    private void loginPasWindow(boolean auth_or_register) {
         loginField = new JTextField(20);
         loginField.setToolTipText("LOGIN");
         loginField.setHorizontalAlignment(JTextField.LEFT);
-
-
         passwordField = new JPasswordField(20);
         passwordField.setToolTipText("PASSWORD");
         passwordField.setHorizontalAlignment(JTextField.LEFT);
@@ -150,23 +110,62 @@ public class AuthFrame extends ExtendableJFrame {
         b.addActionListener((ActionEvent e) -> {
             login = loginField.getText();
             password = passwordField.getText();
-
-//      #TODO      Удалить потом
-            JOptionPane.showMessageDialog(AuthFrame.this,
-                    "Ваше слово: " + login + " " + password);
-//            ------------------------------
-            d.setVisible(false);
+            if(auth_or_register) {
+                auth();
+                d.setVisible(false);
+            }
+            else{
+                register();
+                d.setVisible(false);
+            }
         });
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         p1.add(loginField);
         p1.add(passwordField);
         p1.add(Box.createRigidArea(new Dimension(30, 0)));
         p1.add(b);
-
-
         d.setContentPane(p1);
         d.setSize(400, 130);
         d.setVisible(true);
     }
-
+    private void auth(){
+        session.setUser(login);
+        User user = new User();
+        user.setPass(password);
+        user.setUser(login);
+        try {
+            connection.send(serialize(new AuthResponse("auth", session.getUser(), session.isAuthorized(), "", user.toString())));
+            AuthResponse authResponse = connection.recieve();
+            System.out.println(authResponse.getCommand());
+            if (authResponse.isAutorized()) {
+                session.setUser(authResponse.getUser());
+                session.setAuthoriazed(authResponse.isAutorized());
+                JOptionPane.showMessageDialog(panel, resourceBundle.getString("succes"),
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
+                EventQueue.invokeLater(() -> {
+                    MainFrame ex = new MainFrame(connection, session);
+                    ex.setVisible(true);
+                    setVisible(false);
+                });
+            } else {
+                JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void register(){
+        User user = new User();
+        user.setPass(password);
+        user.setUser(login);
+        try {
+            connection.send(serialize(new AuthResponse("register", session.getUser(), session.isAuthorized(), "", user.toString())));
+            AuthResponse response = connection.recieve();
+            JOptionPane.showMessageDialog(panel, response.getCommand(),
+                    "Information", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
