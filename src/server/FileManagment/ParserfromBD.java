@@ -21,8 +21,7 @@ public class ParserfromBD {
             CopyOnWriteArrayList<HumanBeing> ls = collectionManager.getConcurrentCollection();
             ls.clear();
             for (String row : rows.split("\n\n")) {
-                row = row.replace("(", "");
-                row = row.replace(")", "");
+                row = row.substring(1,row.length()-1);
                 if (!rows.equals("")) {
                     String[] params = row.split(",");
                     HumanBeing hb = new HumanBeing();

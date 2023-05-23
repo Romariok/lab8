@@ -4,7 +4,6 @@ import Data.HumanBeing;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Types;
 
 public class HumanbeingTableManager extends TableManager {
     private final String columns = "name, x, y, realHero, hasToothpick, impactSpeed, soundtrackName, weaponType, mood, carCool";
@@ -15,7 +14,7 @@ public class HumanbeingTableManager extends TableManager {
 
     public boolean updateCommand(HumanBeing hb, long id,String user) {
         try {
-            PreparedStatement preparedStatement = ServerConnection.getINSTANCE().prepareStatement("UPDATE humanbeing SET (" + columns + ") (?,?,?,?,?,?,?,?,?,?) WHERE id=? and login = ?");
+            PreparedStatement preparedStatement = ServerConnection.getINSTANCE().prepareStatement("UPDATE humanbeing SET (" + columns + ") = (?,?,?,?,?,?,?,?,?,?) WHERE id=? and login = ?");
             prepare(preparedStatement, hb);
             preparedStatement.setLong(11, id);
             preparedStatement.setString(12,user);

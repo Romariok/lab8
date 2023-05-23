@@ -19,6 +19,7 @@ public class Update extends Command_abstract implements CommandResponse {
         long id = Long.parseLong(getArgs()[0]);
         setBd(true);
         HumanBeing humanBeingNew = (HumanBeing) getValue();
+        humanBeingNew.setLogin(getUser());
         setSuccess(getCollectionManager().getDBManager().updateCommand(humanBeingNew, id, getUser()));
         if (isSuccess()) {
             output = "Ваш элемент успешно обновлён!\n";

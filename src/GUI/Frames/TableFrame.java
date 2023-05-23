@@ -102,29 +102,28 @@ public class TableFrame extends ExtendableJFrame {
             public void editingStopped(ChangeEvent e) {
                 int row = table.getSelectedRow();
                 int col = table.getSelectedColumn();
-                String login = (String) table.getValueAt(row, 12);
+                String login = table.getValueAt(row, 12).toString();
                 Long id = (Long) table.getValueAt(row, 0);
 
 
                 if (session.getUser().equals(login)) {
                     HumanBeing hb = getById(id);
                     switch (col) {
-                        case 1: {
-                            Object line = table.getValueAt(row, 0);
+                        case 1 -> {
+                            Object line = table.getValueAt(row, 1);
                             if (line != null && !line.equals("")) {
-                                hb.setName((String) line);
+                                hb.setName(line.toString());
                             } else {
                                 JOptionPane.showMessageDialog(TableFrame.this, "Name is unacceptable!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 2: {
-                            Object line = table.getValueAt(row, 1);
-                            if ((!Objects.equals(line, "\n")) && !line.equals("") && (line != null)) {
+                        case 2 -> {
+                            Object line = table.getValueAt(row, 2);
+                            if ((!Objects.equals(line.toString(), "\n")) && !line.equals("") && (line != null)) {
                                 try {
-                                    if ((Integer) line <= 493) {
-                                        hb.getCoordinates().setX((Integer) line);
+                                    if (Integer.parseInt(line.toString()) <= 493) {
+                                        hb.getCoordinates().setX(Integer.parseInt(line.toString()));
                                     } else {
                                         JOptionPane.showMessageDialog(TableFrame.this, "Coordinate X must be lower than 494!",
                                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -137,15 +136,13 @@ public class TableFrame extends ExtendableJFrame {
                                 JOptionPane.showMessageDialog(TableFrame.this, "Coordinate X must be a digit!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-
-                        case 3: {
+                        case 3 -> {
                             Object line = table.getValueAt(row, 3);
-                            if ((!Objects.equals(line, "\n")) && !line.equals("") && (line != null)) {
+                            if ((!Objects.equals(line.toString(), "\n")) && !line.toString().equals("") && (line != null)) {
                                 try {
-                                    if ((Integer) line <= 493) {
-                                        hb.getCoordinates().setY((Long) line);
+                                    if (Long.parseLong(line.toString()) <= 493) {
+                                        hb.getCoordinates().setY(Long.parseLong(line.toString()));
                                     } else {
                                         JOptionPane.showMessageDialog(TableFrame.this, "Coordinate Y must be lower than 494!",
                                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -158,35 +155,32 @@ public class TableFrame extends ExtendableJFrame {
                                 JOptionPane.showMessageDialog(TableFrame.this, "Coordinate Y must be a digit!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-
-                        case 5: {
+                        case 5 -> {
                             Object line = table.getValueAt(row, 5);
-                            switch ((String) line) {
+                            switch (line.toString()) {
                                 case "Да", "true" -> hb.setRealHero(true);
                                 case "Нет", "false" -> hb.setRealHero(false);
-                                default -> JOptionPane.showMessageDialog(TableFrame.this, "RealHero value is unacceptable!",
-                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                default ->
+                                        JOptionPane.showMessageDialog(TableFrame.this, "RealHero value is unacceptable!",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 6: {
+                        case 6 -> {
                             Object line = table.getValueAt(row, 6);
-                            switch ((String) line) {
+                            switch (line.toString()) {
                                 case "Да", "true" -> hb.setHasToothpick(true);
                                 case "Нет", "false" -> hb.setHasToothpick(false);
                                 default ->
                                         JOptionPane.showMessageDialog(TableFrame.this, "Toothpick value is unacceptable!",
                                                 "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 7: {
+                        case 7 -> {
                             Object line = table.getValueAt(row, 7);
                             try {
-                                if (line != null && (Long) line <= 572 && (Long) line >= 0 && !line.equals("")) {
-                                    hb.setImpactSpeed((Long) line);
+                                if (line != null && Long.parseLong(line.toString()) <= 572 && Long.parseLong(line.toString()) >= 0 && !line.equals("")) {
+                                    hb.setImpactSpeed(Long.parseLong(line.toString()));
                                 } else {
                                     JOptionPane.showMessageDialog(TableFrame.this, "Impact speed must be positive number and lower 573!",
                                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -195,32 +189,30 @@ public class TableFrame extends ExtendableJFrame {
                                 JOptionPane.showMessageDialog(TableFrame.this, "Impact speed must be a digit!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 8: {
-                            String line = (String) table.getValueAt(row, 8);
+                        case 8 -> {
+                            String line = table.getValueAt(row, 8).toString();
                             if (line != null && !line.equals("")) {
                                 hb.setSoundtrackName(line);
                             } else {
                                 JOptionPane.showMessageDialog(TableFrame.this, "Soundtrack name is unacceptable!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 9: {
-                            String line = (String) table.getValueAt(row, 9);
+                        case 9 -> {
+                            String line = table.getValueAt(row, 9).toString();
                             switch (line) {
                                 case "Shotgun" -> hb.setWeaponType(WeaponType.SHOTGUN);
                                 case "Knife" -> hb.setWeaponType(WeaponType.KNIFE);
                                 case "Machine gun" -> hb.setWeaponType(WeaponType.MACHINE_GUN);
                                 case "Rifle" -> hb.setWeaponType(WeaponType.RIFLE);
-                                default -> JOptionPane.showMessageDialog(TableFrame.this, "Weapon type is unacceptable!",
-                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                default ->
+                                        JOptionPane.showMessageDialog(TableFrame.this, "Weapon type is unacceptable!",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
-                        case 10: {
-                            String line = (String) table.getValueAt(row, 10);
+                        case 10 -> {
+                            String line = table.getValueAt(row, 10).toString();
                             switch (line) {
                                 case "Longing" -> hb.setMood(Mood.LONGING);
                                 case "Gloom" -> hb.setMood(Mood.GLOOM);
@@ -228,23 +220,22 @@ public class TableFrame extends ExtendableJFrame {
                                 default -> JOptionPane.showMessageDialog(TableFrame.this, "Mood is unacceptable!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
+
                         }
-                        case 11: {
-                            String line = (String) table.getValueAt(row, 12);
+                        case 11 -> {
+                            String line = table.getValueAt(row, 11).toString();
                             switch (line) {
                                 case "Да", "true" -> hb.getCar().setCool(true);
                                 case "Нет", "false" -> hb.getCar().setCool(false);
                                 default -> JOptionPane.showMessageDialog(TableFrame.this, "Car value is unacceptable!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                            break;
                         }
                     }
                     try{
-//                        #TODO тут ошибка вылазит
-                        connection.send(serialize(new AuthResponse("update", session.getUser(), session.isAuthorized(), String.valueOf(hb.getId()), hb.toString())));
+                        connection.send(serialize(new AuthResponse("update", session.getUser(), session.isAuthorized(), hb.getId().toString(), hb.toString())));
                         AuthResponse response = connection.recieve();
+                        System.out.println(response.getCommand());
                         JOptionPane.showMessageDialog(TableFrame.this, response.getCommand(),
                                 "Information", JOptionPane.INFORMATION_MESSAGE);
                     }catch (Exception ex){
