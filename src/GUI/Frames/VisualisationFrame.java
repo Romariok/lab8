@@ -3,6 +3,7 @@ package GUI.Frames;
 
 import Auth.Session;
 import GUI.Panels.VisualisationPanel;
+import client.Connection;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -12,7 +13,9 @@ import java.util.ResourceBundle;
 
 public class VisualisationFrame extends ExtendableJFrame{
     private VisualisationPanel panel;
-    public VisualisationFrame(){
+    public VisualisationFrame(Connection connection, Session session){
+        this.connection = connection;
+        this.session = session;
         initUI();
     }
     @Override
@@ -22,14 +25,9 @@ public class VisualisationFrame extends ExtendableJFrame{
                 EtchedBorder.RAISED));
         add(statusbar, BorderLayout.SOUTH);
         setJMenuBar(menuBar);
-        panel = new VisualisationPanel();
+        panel = new VisualisationPanel(connection, session);
         getContentPane().add(panel);
-//        addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosed(WindowEvent e) {
-//                panel.getTimer().stop();
-//            }
-//        });
+
         pack();
         setPreferredSize(new Dimension(513, 513));
         setResizable(false);

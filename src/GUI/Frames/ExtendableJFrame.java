@@ -6,11 +6,80 @@ import client.Connection;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public abstract class ExtendableJFrame extends JFrame{
+    protected static final DateTimeFormatter POLISH_DATE_TIME_FORMATTER
+            = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .appendLiteral(" ")
+            .appendValue(ChronoField.YEAR, 4)
+            .appendLiteral('-')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('-')
+            .appendValue(ChronoField.DAY_OF_MONTH, 2,2, SignStyle.NORMAL)
+            .toFormatter()
+            .withLocale(new Locale("pl", "PL"));
+
+    protected static final DateTimeFormatter RUSSIAN_DATE_TIME_FORMATTER
+            = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .appendLiteral(" ")
+            .appendValue(ChronoField.DAY_OF_MONTH, 2,2,SignStyle.NORMAL)
+            .appendLiteral('.')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('.')
+            .appendValue(ChronoField.YEAR,4)
+            .toFormatter()
+            .withLocale(Locale.getDefault());
+
+    protected static final DateTimeFormatter ICELANDIC_DATE_TIME_FORMATTER
+            = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .appendLiteral(" ")
+            .appendValue(ChronoField.DAY_OF_MONTH, 2,2,SignStyle.NORMAL)
+            .appendLiteral('.')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('.')
+            .appendValue(ChronoField.YEAR,4)
+            .toFormatter()
+            .withLocale(new Locale("is", "IS"));
+
+    protected static final DateTimeFormatter SPANISH_COSTA_RICA_DATE_TIME_FORMATTER
+            = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(":")
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .appendLiteral(" ")
+            .appendValue(ChronoField.DAY_OF_MONTH, 2,2,SignStyle.NORMAL)
+            .appendLiteral('/')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('/')
+            .appendValue(ChronoField.YEAR,4)
+            .toFormatter()
+            .withLocale(new Locale("es_CR", "ES_CR"));
+
+    public static DateTimeFormatter currentDateTimeFormatter = RUSSIAN_DATE_TIME_FORMATTER;
+
+//.appendText(ChronoField.MONTH_OF_YEAR, DateFormatSymbols.getInstance(new Locale("pl", "PL")).getMonths())
+
     protected Connection connection;
     protected static ResourceBundle resourceBundle;
     protected  JLabel statusbar = new JLabel("Ready to fight!");
@@ -41,17 +110,20 @@ public abstract class ExtendableJFrame extends JFrame{
         });
         menuBar.add(languages_menu);
         menuBar.add(help_menu);
+
         rus_item = new JMenuItem("Russian", IconRus);
         rus_item.addActionListener((ActionEvent e) -> {
             JMenuItem item = (JMenuItem) e.getSource();
             String label = item.getText();
             updateLanguage(Locale.getDefault());
+            currentDateTimeFormatter = RUSSIAN_DATE_TIME_FORMATTER;
             statusbar.setText(" " + label + " menu item clicked");
         });
         is_item = new JMenuItem("Icelandic", IconIs);
         is_item.addActionListener((ActionEvent e) -> {
             JMenuItem item = (JMenuItem) e.getSource();
             String label = item.getText();
+            currentDateTimeFormatter = ICELANDIC_DATE_TIME_FORMATTER;
             updateLanguage(new Locale("is", "IS"));
             statusbar.setText(" " + label + " menu item clicked");
         });
@@ -59,6 +131,7 @@ public abstract class ExtendableJFrame extends JFrame{
         pl_item.addActionListener((ActionEvent e) -> {
             JMenuItem item = (JMenuItem) e.getSource();
             String label = item.getText();
+            currentDateTimeFormatter = POLISH_DATE_TIME_FORMATTER;
             updateLanguage(new Locale("pl", "PL"));
             statusbar.setText(" " + label + " menu item clicked");
         });
@@ -66,6 +139,7 @@ public abstract class ExtendableJFrame extends JFrame{
         es_cr_item.addActionListener((ActionEvent e) -> {
             JMenuItem item = (JMenuItem) e.getSource();
             String label = item.getText();
+            currentDateTimeFormatter = SPANISH_COSTA_RICA_DATE_TIME_FORMATTER;
             updateLanguage(new Locale("es_CR", "ES_CR"));
             statusbar.setText(" " + label + " menu item clicked");
         });
@@ -76,29 +150,5 @@ public abstract class ExtendableJFrame extends JFrame{
 
 
     }
-//    protected void showWindowText(String text){
-//        w = new JWindow();
-//        JLabel l = new JLabel(text);
-//        l.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        JButton b = new JButton("OK");
-//        b.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        b.addActionListener(this);
-//        JPanel p = new JPanel();
-//        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-//        p.add(Box.createRigidArea(new Dimension(0, 20)));
-//        p.add(l);
-//        p.add(Box.createRigidArea(new Dimension(0, 20)));
-//        p.add(b);
-//        w.add(p);
-//
-//        w.setSize(200, 100);
-//        w.setLocation(300, 300);
-//
-//        w.setVisible(true);
-//    }
-//    public void actionPerformed(ActionEvent evt)
-//    {
-//        w.setVisible(false);
-//    }
     abstract void updateLanguage(Locale locale);
 }

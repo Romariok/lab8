@@ -29,7 +29,7 @@ public class MainFrame extends ExtendableJFrame {
         this.session = session;
         cf = new CommandsFrame(connection,session);
         tf = new TableFrame(connection,session);
-        vf = new VisualisationFrame();
+        vf = new VisualisationFrame(connection, session);
         initUI();
     }
 

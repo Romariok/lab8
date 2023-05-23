@@ -24,7 +24,7 @@ public class AuthFrame extends ExtendableJFrame {
     private JButton auth_button = new JButton("Log in");
     private JButton register_button = new JButton("Registration");
     private JPanel panel;
-    private JDialog d = new JDialog();
+    private JDialog d = new JDialog(this);
     private MainFrame ex;
     private Session session;
 

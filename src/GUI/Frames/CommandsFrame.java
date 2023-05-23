@@ -47,8 +47,8 @@ public class CommandsFrame extends ExtendableJFrame {
     private JTextField car_text = new JTextField(10);
     private JTextField arg_text = new JTextField(10);
     private LinkedList<JPanel> panels = new LinkedList<>();
-    private JDialog d = new JDialog();
-    private JDialog d1 = new JDialog();
+    private JDialog d = new JDialog(this);
+    private JDialog d1 = new JDialog(this);
 
     private String name;
     private Integer x;
