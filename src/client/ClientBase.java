@@ -4,17 +4,13 @@ import Auth.AuthResponse;
 import Auth.Session;
 import Command.CommandResponse;
 import Command.CommandFactory;
-import Data.HumanBeing;
-import GUI.AuthFrame;
-import server.FileManagment.ParserfromBD;
+import GUI.Frames.AuthFrame;
 
 import java.awt.*;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import static Data.setVariables.readHumanBeingFromConsole.initializeHumanBeing;
 import static client.ClientMain.arg;
 import static Command.Serializer.serialize;
 public class ClientBase implements Runnable {

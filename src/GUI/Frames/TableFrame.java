@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Frames;
 
 import Auth.AuthResponse;
 import Auth.Session;
@@ -59,7 +59,7 @@ public class TableFrame extends ExtendableJFrame {
                 = new TableRowSorter<>(table.getModel());
         table.setAutoCreateRowSorter(true);
 //        table.setRowSorter(sorter);
-
+// #TODO добавить фильтр
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

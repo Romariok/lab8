@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Frames;
 
 import Auth.AuthResponse;
 import Auth.Session;
@@ -149,7 +149,7 @@ public class CommandsFrame extends ExtendableJFrame {
                 p.add(Box.createRigidArea(new Dimension(0, 10)));
                 p.add(b);
                 w.add(p);
-                w.setSize(200, 150);
+                w.setSize(400, 500);
                 w.setLocation(300, 300);
                 w.setVisible(true);
             } catch (Exception exc) {
@@ -239,6 +239,7 @@ public class CommandsFrame extends ExtendableJFrame {
         setJMenuBar(menuBar);
         pack();
         setSize(500, 600);
+        setMinimumSize(new Dimension(400, 600));
         setLocationRelativeTo(null);
     }
 
@@ -280,7 +281,7 @@ public class CommandsFrame extends ExtendableJFrame {
 
         JLabel coordinate_x_label = new JLabel("Coordinate X: ");
         JPanel coordinate_x_panel = new JPanel();
-        coordinate_x_text.setToolTipText("Not null, must be a digit");
+        coordinate_x_text.setToolTipText("Not null, must be a positive digit, must be lower 494");
         coordinate_x_panel.add(coordinate_x_label);
         coordinate_x_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         coordinate_x_panel.add(coordinate_x_text);
@@ -289,7 +290,7 @@ public class CommandsFrame extends ExtendableJFrame {
         JLabel coordinate_y_label = new JLabel("Coordinate Y: ");
         JPanel coordinate_y_panel = new JPanel();
         coordinate_y_panel.setLayout(new BoxLayout(coordinate_y_panel, BoxLayout.X_AXIS));
-        coordinate_y_text.setToolTipText("Not null, must be a digit, must be lower 494");
+        coordinate_y_text.setToolTipText("Not null, must be a positive digit, must be lower 494");
         coordinate_y_panel.add(coordinate_y_label);
         coordinate_y_panel.add(Box.createRigidArea(new Dimension(10, 0)));
         coordinate_y_panel.add(coordinate_y_text);
@@ -384,12 +385,18 @@ public class CommandsFrame extends ExtendableJFrame {
             }
 
             line = coordinate_x_text.getText();
-            if (line != "\n" && line != null && !line.equals("")) {
+            if ((!Objects.equals(line, "\n")) && !line.equals("") && (line != null)) {
                 try {
-                    x = Integer.parseInt(line.trim());
+                    if (Integer.parseInt(line) <= 493) {
+                        x = Integer.parseInt(line);
+                    } else {
+                        sb.append("Coordinate X must be lower than 494!\n");
+                    }
                 } catch (NumberFormatException ex) {
                     sb.append("Coordinate X must be a digit!\n");
                 }
+            } else {
+                sb.append("Coordinate X must be a digit!\n");
             }
 
             line = coordinate_y_text.getText();

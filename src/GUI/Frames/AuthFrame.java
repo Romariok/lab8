@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Frames;
 
 import Auth.AuthResponse;
 import Auth.Session;
@@ -75,7 +75,7 @@ public class AuthFrame extends ExtendableJFrame {
         pack();
 
         setSize(400, 400);
-
+        setMinimumSize(new Dimension(300, 300));
         setLocationRelativeTo(null);
 
         setVisible(true);
@@ -109,11 +109,10 @@ public class AuthFrame extends ExtendableJFrame {
         b.addActionListener((ActionEvent e) -> {
             login = loginField.getText();
             password = passwordField.getText();
-            if(auth_or_register) {
+            if (auth_or_register) {
                 auth();
                 d.setVisible(false);
-            }
-            else{
+            } else {
                 register();
                 d.setVisible(false);
             }
@@ -125,10 +124,12 @@ public class AuthFrame extends ExtendableJFrame {
         p1.add(b);
         d.setContentPane(p1);
         d.setSize(400, 130);
+        d.setMinimumSize(new Dimension(400, 100));
         d.setLocation(400, 500);
         d.setVisible(true);
     }
-    private void auth(){
+
+    private void auth() {
         session.setUser(login);
         User user = new User();
         user.setPass(password);
@@ -156,7 +157,8 @@ public class AuthFrame extends ExtendableJFrame {
             JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    private void register(){
+
+    private void register() {
         User user = new User();
         user.setPass(password);
         user.setUser(login);

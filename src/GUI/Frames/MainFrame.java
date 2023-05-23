@@ -1,10 +1,9 @@
-package GUI;
+package GUI.Frames;
 
 import Auth.Session;
 import client.Connection;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,6 +20,7 @@ public class MainFrame extends ExtendableJFrame {
     private JPanel main_panel;
     private CommandsFrame cf;
     private TableFrame tf;
+    private VisualisationFrame vf;
 
     private JButton list_of_commands;
 
@@ -29,6 +29,7 @@ public class MainFrame extends ExtendableJFrame {
         this.session = session;
         cf = new CommandsFrame(connection,session);
         tf = new TableFrame(connection,session);
+        vf = new VisualisationFrame();
         initUI();
     }
 
@@ -48,6 +49,7 @@ public class MainFrame extends ExtendableJFrame {
         pack();
         setSize(500, 500);
         setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(400, 300));
         setVisible(true);
     }
 
@@ -56,6 +58,7 @@ public class MainFrame extends ExtendableJFrame {
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
         tf.updateLanguage(locale);
         cf.updateLanguage(locale);
+        vf.updateLanguage(locale);
         setTitle(resourceBundle.getString("title_name"));
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
         is_item.setText(resourceBundle.getString("is_lang_name"));
@@ -94,6 +97,15 @@ public class MainFrame extends ExtendableJFrame {
         });
         table_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         visualization_button = new JButton("Visualization of Objects");
+        visualization_button.addActionListener((ActionEvent e) -> {
+            JButton item = (JButton) e.getSource();
+            String label = item.getText();
+            vf.updateLanguage(resourceBundle.getLocale());
+            EventQueue.invokeLater(() -> {
+                vf.setVisible(true);
+            });
+            statusbar.setText(" " + label + " button clicked");
+        });
         visualization_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button_panel = new JPanel();
         button_panel.setLayout(new BoxLayout(button_panel, BoxLayout.Y_AXIS));
