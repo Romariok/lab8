@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
+import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -84,7 +86,7 @@ public abstract class ExtendableJFrame extends JFrame{
     protected static ResourceBundle resourceBundle;
     protected  JLabel statusbar = new JLabel("Ready to fight!");
     protected  JMenuBar menuBar;
-    protected JMenu help_menu;
+    protected JMenuItem help_menu;
     protected JMenu languages_menu;
     protected JMenuItem rus_item;
     protected JMenuItem is_item;
@@ -102,11 +104,22 @@ public abstract class ExtendableJFrame extends JFrame{
         Image hentai = new ImageIcon("src/GUI/Icons/artem.jpg").getImage();
         menuBar = new JMenuBar();
         languages_menu = new JMenu("Languages");
-        help_menu = new JMenu("Help");
+        help_menu = new JMenuItem("Help");
         help_menu.addActionListener((ActionEvent e) -> {
             JMenuItem item = (JMenuItem) e.getSource();
             String name = item.getText();
-            statusbar.setText(" " + name + " menu item clicked");
+            statusbar.setText(" " + name + " item menu clicked");
+            try{
+                if(Desktop.isDesktopSupported()){
+                    Desktop desktop = Desktop.getDesktop();
+                    if(desktop.isSupported(Desktop.Action.BROWSE)){
+                        desktop.browse(URI.create(getUrlFromLocale()));
+                    }
+                }
+            }
+            catch (Exception exception){
+                exception.printStackTrace();
+            }
         });
         menuBar.add(languages_menu);
         menuBar.add(help_menu);
@@ -151,4 +164,6 @@ public abstract class ExtendableJFrame extends JFrame{
 
     }
     abstract void updateLanguage(Locale locale);
+
+    abstract String getUrlFromLocale();
 }

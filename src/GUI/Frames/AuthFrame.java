@@ -27,6 +27,7 @@ public class AuthFrame extends ExtendableJFrame {
     private JDialog d = new JDialog(this);
     private MainFrame ex;
     private Session session;
+    private Locale currentLocale;
 
     public AuthFrame(Connection connection, Session session) {
         this.connection = connection;
@@ -84,6 +85,7 @@ public class AuthFrame extends ExtendableJFrame {
 
     @Override
     void updateLanguage(Locale locale) {
+        currentLocale = locale;
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
         is_item.setText(resourceBundle.getString("is_lang_name"));
@@ -171,4 +173,19 @@ public class AuthFrame extends ExtendableJFrame {
             JOptionPane.showMessageDialog(panel, resourceBundle.getString("failure"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public String getUrlFromLocale() {
+        String t = this.currentLocale.getCountry();
+        if (t.equals("RU")) {
+            return "https://www.youtube.com/watch?v=KjBFS3886SQ&t=14s";
+        }
+        if (t.equals("PL")) {
+            return "https://www.youtube.com/watch?v=B1AkqtFQYLE&t=21s";
+        }
+        if(t.equals("ES_CR")){
+            return "https://www.youtube.com/watch?v=7yBxZC7oYRA";
+        }
+        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    }
 }
+

@@ -32,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static Command.Serializer.serialize;
 
 public class TableFrame extends ExtendableJFrame {
+    private Locale currentLocale;
     public static CopyOnWriteArrayList<HumanBeing> currentUserList = new CopyOnWriteArrayList<>();
     private JTextField filterText;
     private JPanel tablePanel = new JPanel();
@@ -329,6 +330,7 @@ public class TableFrame extends ExtendableJFrame {
 
     @Override
     void updateLanguage(Locale locale) {
+        currentLocale = locale;
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
         System.out.println(resourceBundle.getLocale().getCountry());
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
@@ -385,5 +387,18 @@ public class TableFrame extends ExtendableJFrame {
 
     public HumanBeing getById(Long id) {
         return currentUserList.stream().filter(o -> o.getId() == id).findFirst().get();
+
+    public String getUrlFromLocale() {
+        String t = this.currentLocale.getCountry();
+        if (t.equals("RU")) {
+            return "https://www.youtube.com/watch?v=KjBFS3886SQ&t=14s";
+        }
+        if (t.equals("PL")) {
+            return "https://www.youtube.com/watch?v=B1AkqtFQYLE&t=21s";
+        }
+        if(t.equals("ES_CR")){
+            return "https://www.youtube.com/watch?v=7yBxZC7oYRA";
+        }
+        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     }
 }

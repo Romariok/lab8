@@ -16,6 +16,8 @@ public class VisualisationFrame extends ExtendableJFrame{
     public VisualisationFrame(Connection connection, Session session){
         this.connection = connection;
         this.session = session;
+    private Locale currentLocale;
+    public VisualisationFrame(){
         initUI();
     }
     @Override
@@ -36,6 +38,7 @@ public class VisualisationFrame extends ExtendableJFrame{
 
     @Override
     void updateLanguage(Locale locale){
+        currentLocale = locale;
         resourceBundle = ResourceBundle.getBundle("GUI.resources.Locale", locale);
         setTitle(resourceBundle.getString("graph_button"));
         rus_item.setText(resourceBundle.getString("ru_lang_name"));
@@ -47,5 +50,17 @@ public class VisualisationFrame extends ExtendableJFrame{
     }
 
 
-
+    public String getUrlFromLocale() {
+        String t = this.currentLocale.getCountry();
+        if (t.equals("RU")) {
+            return "https://www.youtube.com/watch?v=KjBFS3886SQ&t=14s";
+        }
+        if (t.equals("PL")) {
+            return "https://www.youtube.com/watch?v=B1AkqtFQYLE&t=21s";
+        }
+        if(t.equals("ES_CR")){
+            return "https://www.youtube.com/watch?v=7yBxZC7oYRA";
+        }
+        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    }
 }
