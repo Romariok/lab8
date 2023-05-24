@@ -13,9 +13,10 @@ import java.util.ResourceBundle;
 
 public class VisualisationFrame extends ExtendableJFrame{
     private VisualisationPanel panel;
-    public VisualisationFrame(Connection connection, Session session){
+    public VisualisationFrame(Connection connection, Session session) {
         this.connection = connection;
         this.session = session;
+    }
     private Locale currentLocale;
     public VisualisationFrame(){
         initUI();

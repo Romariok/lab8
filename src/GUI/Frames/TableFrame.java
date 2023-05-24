@@ -387,6 +387,8 @@ public class TableFrame extends ExtendableJFrame {
 
     public HumanBeing getById(Long id) {
         return currentUserList.stream().filter(o -> o.getId() == id).findFirst().get();
+    }
+
 
     public String getUrlFromLocale() {
         String t = this.currentLocale.getCountry();
