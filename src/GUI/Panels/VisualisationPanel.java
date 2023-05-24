@@ -4,12 +4,12 @@ import Auth.AuthResponse;
 import Auth.Session;
 import Command.Serializer;
 import Data.*;
-import GUI.Frames.CommandsFrame;
 import client.Connection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 import static GUI.Frames.ExtendableJFrame.currentDateTimeFormatter;
@@ -25,6 +26,7 @@ import static GUI.Frames.TableFrame.currentUserList;
 
 
 public class VisualisationPanel extends JPanel {
+    private CopyOnWriteArrayList<HumanBeing> tempUserList = new CopyOnWriteArrayList<>();
     private Connection connection;
     private Session session;
     private javax.swing.Timer timer;
@@ -80,14 +82,36 @@ public class VisualisationPanel extends JPanel {
         });
         timer.start();
 
-
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.g2d = (Graphics2D) g;
-        drawElements();
+        if (currentUserList.size() > tempUserList.size()) {
+            CopyOnWriteArrayList<HumanBeing> createData = currentUserList;
+            for (HumanBeing hb : currentUserList) {
+                if (tempUserList.contains(hb)) {
+                    createData.remove(hb);
+                }
+            }
+            drawCreation(tempUserList);
+
+            int delayInMilliseconds = 1000*2;
+            ActionListener taskPerformer = e -> {
+                drawElements();
+                ((Timer) e.getSource()).stop();
+            };
+
+            Timer t = new Timer(delayInMilliseconds, taskPerformer);
+            t.setRepeats(false); // ensure it's a one-time execution
+            t.start();
+        }
+        else{
+            drawElements();
+        }
+        tempUserList = currentUserList;
+
     }
 
     public javax.swing.Timer getTimer() {
@@ -229,12 +253,11 @@ public class VisualisationPanel extends JPanel {
         });
         b2.addActionListener((ActionEvent e) -> {
             try {
-                connection.send(Serializer.serialize(new AuthResponse("remove_by_id", session.getUser(),session.isAuthorized(),String.valueOf(hb.getId()),"")));
+                connection.send(Serializer.serialize(new AuthResponse("remove_by_id", session.getUser(), session.isAuthorized(), String.valueOf(hb.getId()), "")));
                 AuthResponse response = connection.recieve();
                 JOptionPane.showMessageDialog(VisualisationPanel.this, response.getCommand(),
                         "Information", JOptionPane.INFORMATION_MESSAGE);
-            }
-            catch (Exception exception){
+            } catch (Exception exception) {
                 JOptionPane.showMessageDialog(VisualisationPanel.this, exception,
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -343,7 +366,7 @@ public class VisualisationPanel extends JPanel {
                         h.setLogin(session.getUser());
                         h.setId(hb.getId());
                         h.setCreationDate(hb.getCreationDate());
-                           // #TODO Тут ошибку выводит при обновлении >:(
+                        // #TODO Тут ошибку выводит при обновлении >:(
                         connection.send(Serializer.serialize(new AuthResponse("update", session.getUser(), session.isAuthorized(), String.valueOf(h.getId()), h.toString())));
                         AuthResponse response = connection.recieve();
                         JOptionPane.showMessageDialog(VisualisationPanel.this, response.getCommand(),
@@ -354,8 +377,7 @@ public class VisualisationPanel extends JPanel {
                         JOptionPane.showMessageDialog(VisualisationPanel.this, sb.toString(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(VisualisationPanel.this, "You can't change date of not your object!",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -388,6 +410,29 @@ public class VisualisationPanel extends JPanel {
         d.setVisible(true);
     }
 
+    public void drawCreation(CopyOnWriteArrayList<HumanBeing> humanBeings) {
+        try {
+            humanBeings.forEach((HumanBeing e) ->{
+                int x = e.getCoordinates().getX();
+                int y = Integer.parseInt(e.getCoordinates().getY().toString());
+                drawSparkles(x, y);
+            });
+
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+    public void drawSparkles(int x, int y){
+        g2d.setColor(Color.YELLOW);
+        g2d.drawLine(x, y, x+40, y+40);
+        g2d.drawLine(x, y, x+40, y);
+        g2d.drawLine(x, y, x+40, y-40);
+        g2d.drawLine(x, y, x, y+40);
+        g2d.drawLine(x, y, x, y-40);
+        g2d.drawLine(x, y, x-40, y);
+        g2d.drawLine(x, y, x-40, y-40);
+        g2d.drawLine(x, y, x-40, y+40);
+    }
     public void drawElements() {
         try {
             currentUserList.forEach((HumanBeing e) -> {

@@ -16,11 +16,12 @@ public class VisualisationFrame extends ExtendableJFrame{
     public VisualisationFrame(Connection connection, Session session) {
         this.connection = connection;
         this.session = session;
-    }
-    private Locale currentLocale;
-    public VisualisationFrame(){
         initUI();
     }
+    private Locale currentLocale;
+//    public VisualisationFrame(){
+//        initUI();
+//    }
     @Override
     void initUI(){
         initializeMenuBar();
