@@ -353,7 +353,7 @@ public class TableFrame extends ExtendableJFrame {
 
     private List<Object[]> parseList(String output) {
         List<Object[]> list = new ArrayList<Object[]>();
-        currentUserList.clear();
+        CopyOnWriteArrayList<HumanBeing> temp = new CopyOnWriteArrayList<>();
         if (!output.equals("Collection is empty\n")) {
             for (String arges : output.split("\n\n")) {
                 String[] args = arges.split("\n");
@@ -379,8 +379,10 @@ public class TableFrame extends ExtendableJFrame {
                 fields[11] = hb.getCar().getCool();
                 fields[12] = hb.getLogin();
                 list.add(fields);
-                currentUserList.add(hb);
+                temp.add(hb);
             }
+            currentUserList.clear();
+            currentUserList.addAll(temp);
         }
         return list;
     }

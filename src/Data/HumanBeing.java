@@ -335,9 +335,6 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.creationDate, other.creationDate)) {
-            return false;
-        }
         if (!Objects.equals(this.getCoordinates().getX(), other.getCoordinates().getX())) {
             return false;
         }

@@ -42,6 +42,7 @@ public class VisualisationPanel extends JPanel {
     private JTextField mood_text = new JTextField(10);
     private JTextField car_text = new JTextField(10);
     private JDialog d = new JDialog();
+    CopyOnWriteArrayList<HumanBeing> createData;
 
     private Graphics2D g2d = null;
 
@@ -76,6 +77,7 @@ public class VisualisationPanel extends JPanel {
                 }
             }
         });
+
         timer = new javax.swing.Timer(10, (ActionEvent e) -> {
             if (g2d == null) return;
             repaint();
@@ -83,35 +85,40 @@ public class VisualisationPanel extends JPanel {
         timer.start();
 
     }
-
+    boolean drawSpark = false;
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.g2d = (Graphics2D) g;
         if (currentUserList.size() > tempUserList.size()) {
-            CopyOnWriteArrayList<HumanBeing> createData = currentUserList;
+            createData = (CopyOnWriteArrayList<HumanBeing>) currentUserList.clone();
             for (HumanBeing hb : currentUserList) {
                 if (tempUserList.contains(hb)) {
                     createData.remove(hb);
                 }
             }
-            drawCreation(tempUserList);
+            drawElements();
+            drawSpark = true;
 
-            int delayInMilliseconds = 1000*2;
-            ActionListener taskPerformer = e -> {
-                drawElements();
-                ((Timer) e.getSource()).stop();
-            };
 
-            Timer t = new Timer(delayInMilliseconds, taskPerformer);
-            t.setRepeats(false); // ensure it's a one-time execution
-            t.start();
         }
         else{
+            if(drawSpark) {
+                drawCreation(createData);
+                int delayInMilliseconds = 1000*1;
+                ActionListener taskPerformer = e -> {
+                    drawSpark = false;
+                    ((Timer) e.getSource()).stop();
+                };
+
+                Timer t = new Timer(delayInMilliseconds, taskPerformer);
+                t.setRepeats(false); // ensure it's a one-time execution
+                t.start();
+            }
+
             drawElements();
         }
-        tempUserList = currentUserList;
-
+        tempUserList = (CopyOnWriteArrayList<HumanBeing>) currentUserList.clone();
     }
 
     public javax.swing.Timer getTimer() {
@@ -424,14 +431,14 @@ public class VisualisationPanel extends JPanel {
     }
     public void drawSparkles(int x, int y){
         g2d.setColor(Color.YELLOW);
-        g2d.drawLine(x, y, x+40, y+40);
-        g2d.drawLine(x, y, x+40, y);
-        g2d.drawLine(x, y, x+40, y-40);
-        g2d.drawLine(x, y, x, y+40);
-        g2d.drawLine(x, y, x, y-40);
-        g2d.drawLine(x, y, x-40, y);
-        g2d.drawLine(x, y, x-40, y-40);
-        g2d.drawLine(x, y, x-40, y+40);
+        g2d.drawLine(x+10, y+15, x+20, y+20);
+        g2d.drawLine(x+10, y+15, x+20, y);
+        g2d.drawLine(x+10, y+15, x+20, y-420);
+        g2d.drawLine(x+10, y+15, x, y+20);
+        g2d.drawLine(x+10, y+15, x, y-20);
+        g2d.drawLine(x+10, y+15, x-20, y);
+        g2d.drawLine(x+10, y+15, x-20, y-20);
+        g2d.drawLine(x+10, y+15, x-20, y+20);
     }
     public void drawElements() {
         try {
